@@ -25,14 +25,14 @@ class NumericalSystem:
         self.pile_soil_space = 5
         self.soil_depth = foundation.h + self.pile_soil_space
         self.soil_diameter = 3.0 * super_str.h
-        self.infinites_width = 2
+        self.infinites_width = 4
         self.infinites_bottom = False
         self.fixed_sides = False
-        self.contact_col_soil = True # False -> tie constraints, True -> contact
+        self.contact_col_soil = False # False -> tie constraints, True -> contact
 
         # mesh
-        self.col_mesh_size = 3
-        self.soil_mesh_size = 7
+        self.col_mesh_size = 5
+        self.soil_mesh_size = 5
         self.contact_mesh_size = 2
 
         # frequency analysis
@@ -79,6 +79,7 @@ class NumericalSystem:
 
 
         # steps
+        _steps.static() # both geostatic and static step
         _steps.create_frequency(self.numEigen, self.minEigen, self.maxEigen)
         _steps.create_ini_disp()
         _steps.create_modal_dynamics(1, 0.01)
@@ -99,12 +100,13 @@ class NumericalSystem:
         _mesh.mesh_parts()
 
 
-        # bc, constraints and loads.py
+        # ic, bc, constraints and loads.py
+        _loads.soil_initial_conditions(zero_h=self.soil_depth)
         _loads.fix_base_bc()
         if self.fixed_sides:
             _loads.fix_sides_bc()
         _loads.ini_disp(super_str.h / 300.0)
-        _loads.gravity()
+        _loads.gravity() # applied separatelly for soil and structure in the related steps
 
 
         # job
@@ -116,6 +118,7 @@ class NumericalSystem:
         _jobs.import_input(self.jobname)
         _jobs.create_job('Infinite_MODEL', self.jobname)
 
+
     def run_analysis(self):
 
         job = mdb.jobs[self.jobname]
@@ -124,11 +127,13 @@ class NumericalSystem:
 
 
     def output(self):
-
+        job = mdb.jobs[self.jobname]
+        job.waitForCompletion()
         odb = output.load_odb(self.jobname)
         output.plot_top_disp(self.results_dir, self.analysisname, odb)
         output.visual(self.results_dir, self.analysisname)
         #odb.close(odb, write=TRUE)
+
 
     def delete_model(self):
         del mdb.models['3D_MODEL']

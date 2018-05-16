@@ -33,6 +33,7 @@ def assemble_parts(soil_depth, column_depth):
     a = mdb.models['3D_MODEL'].rootAssembly
     a.translate(instanceList=('column-1', ), vector=(0.0, 0.0, soil_depth - column_depth))
 
+'''
 def merge_parts():
     a1 = mdb.models['3D_MODEL'].rootAssembly
     a1.InstanceFromBooleanMerge(name='merged_parts', instances=(
@@ -45,3 +46,4 @@ def merge_parts():
     f = p.faces
     faces = f.getSequenceFromMask(mask=('[#421110 ]',), )
     p.Set(faces=faces, name='base_set')
+'''

@@ -22,11 +22,11 @@ if one_analysis:
                 phi=0)  # Soil is a subclass of Material with special properties
 
     # Section
-    tube = HollowRoundSection(d_e=2.0, t=0.05)
+    tube = HollowRoundSection(d_e=4.0, t=0.05)
 
     # Parts
-    super_str = Column(material=steel, section=tube, height=70)  # on soil
-    pile = Column(material=steel, section=tube, height=20)  # in soil
+    super_str = Column(material=steel, section=tube, height=50)  # on soil
+    pile = Column(material=steel, section=tube, height=30)  # in soil
 
     '''------------------ Create & Run Analysis ------------------'''
 

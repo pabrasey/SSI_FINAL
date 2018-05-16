@@ -37,7 +37,7 @@ class Analysis:
                                                 foundation=self.pile,
                                                 results_dir=self.results_dir, analysisname=self.analysisname)
         self.numerical_system.run_analysis()
-        self.numerical_system.output()
+        #self.numerical_system.output()
 
 
     def save_object(self):

@@ -4,7 +4,7 @@ from abaqus import *
 from abaqusConstants import *
 import __main__
 
-def specify_view():
+def mesh_soil_vertical():
     import section
     import regionToolset
     import displayGroupMdbToolset as dgm
@@ -22,392 +22,235 @@ def specify_view():
     import xyPlot
     import displayGroupOdbToolset as dgo
     import connectorBehavior
-    session.viewports['Viewport: 1'].view.setViewpoint(viewVector=(0, -1, 0.5), 
-        cameraUpVector=(0, 0, 1))
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=204.832, 
-        farPlane=376.449, width=103.355, height=62.5746, cameraPosition=(
-        181.863, -200.561, 133.203), cameraUpVector=(-0.304889, -0.496057, 
-        0.813), cameraTarget=(2.09808e-005, 6.67572e-006, 27.5))
-    session.viewports['Viewport: 1'].view.setViewpoint(viewVector=(0, -1, 0.5), 
-        cameraUpVector=(0, 0, 1))
-    session.animationController.setValues(animationType=TIME_HISTORY, viewports=(
-        'Viewport: 1', ))
-    session.animationController.play(duration=UNLIMITED)
-    session.imageAnimationOptions.setValues(vpDecorations=ON, vpBackground=OFF, 
-        compass=OFF)
-    session.writeImageAnimation(
-        fileName='C:/Users/braseyp/Dropbox/Civil Engineering/ETH/ETH_Projektarbeit_SSI_2018/Software/FINAL/round_tower/package/FINAL/results/test_avi', 
-        format=AVI, canvasObjects=(session.viewports['Viewport: 1'], ))
-
-
-def export_Avi():
-    import section
-    import regionToolset
-    import displayGroupMdbToolset as dgm
-    import part
-    import material
-    import assembly
-    import step
-    import interaction
-    import load
-    import mesh
-    import optimization
-    import job
-    import sketch
-    import visualization
-    import xyPlot
-    import displayGroupOdbToolset as dgo
-    import connectorBehavior
-    session.viewports['Viewport: 1'].odbDisplay.setFrame(step='modal_dynamics')
-    session.imageAnimationOptions.setValues(vpDecorations=ON, vpBackground=OFF, 
-        compass=OFF)
-    session.writeImageAnimation(
-        fileName='C:/Users/braseyp/Dropbox/Civil Engineering/ETH/ETH_Projektarbeit_SSI_2018/Software/FINAL/round_tower/package/FINAL/results/test_avi.avi', 
-        format=AVI, canvasObjects=(session.viewports['Viewport: 1'], ))
-    session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
-        UNDEFORMED, ))
-    session.viewports['Viewport: 1'].odbDisplay.setFrame(step='modal_dynamics')
-    session.animationController.setValues(animationType=TIME_HISTORY, viewports=(
-        'Viewport: 1', ))
-    session.animationController.play(duration=UNLIMITED)
-    session.imageAnimationOptions.setValues(vpDecorations=ON, vpBackground=OFF, 
-        compass=OFF)
-    session.writeImageAnimation(
-        fileName='C:/Users/braseyp/Dropbox/Civil Engineering/ETH/ETH_Projektarbeit_SSI_2018/Software/FINAL/round_tower/package/FINAL/results/test_avi.avi', 
-        format=AVI, canvasObjects=(session.viewports['Viewport: 1'], ))
-    session.imageAnimationOptions.setValues(vpDecorations=ON, vpBackground=OFF, 
-        compass=OFF, timeScale=1, frameRate=50)
-    session.writeImageAnimation(
-        fileName='C:/Users/braseyp/Dropbox/Civil Engineering/ETH/ETH_Projektarbeit_SSI_2018/Software/FINAL/round_tower/package/FINAL/results/test_avi.avi', 
-        format=AVI, canvasObjects=(session.viewports['Viewport: 1'], ))
-    session.imageAnimationOptions.setValues(vpDecorations=ON, vpBackground=OFF, 
-        compass=ON)
-    session.writeImageAnimation(
-        fileName='C:/Users/braseyp/Dropbox/Civil Engineering/ETH/ETH_Projektarbeit_SSI_2018/Software/FINAL/round_tower/package/FINAL/results/test_avi.avi', 
-        format=QUICKTIME, canvasObjects=(session.viewports['Viewport: 1'], ))
-    session.imageAnimationOptions.setValues(vpDecorations=ON, vpBackground=OFF, 
-        compass=ON, frameRate=8)
-    session.writeImageAnimation(
-        fileName='C:/Users/braseyp/Dropbox/Civil Engineering/ETH/ETH_Projektarbeit_SSI_2018/Software/FINAL/round_tower/package/FINAL/results/test_avi.avi', 
-        format=AVI, canvasObjects=(session.viewports['Viewport: 1'], ))
-    session.imageAnimationOptions.setValues(vpDecorations=ON, vpBackground=OFF, 
-        compass=ON)
-    session.writeImageAnimation(
-        fileName='C:/Users/braseyp/Dropbox/Civil Engineering/ETH/ETH_Projektarbeit_SSI_2018/Software/FINAL/round_tower/package/FINAL/results/test_avi.avi', 
-        format=QUICKTIME, canvasObjects=(session.viewports['Viewport: 1'], ))
-def zoom():
-    import section
-    import regionToolset
-    import displayGroupMdbToolset as dgm
-    import part
-    import material
-    import assembly
-    import step
-    import interaction
-    import load
-    import mesh
-    import optimization
-    import job
-    import sketch
-    import visualization
-    import xyPlot
-    import displayGroupOdbToolset as dgo
-    import connectorBehavior
-    session.viewports['Viewport: 1'].view.fitView()
-    odb = session.odbs['C:/Users/braseyp/Dropbox/Civil Engineering/ETH/ETH_Projektarbeit_SSI_2018/Software/FINAL/round_tower/package/FINAL/abaqus_wd/job_infinite_2018_5_15--16_27_482000.odb']
-    session.viewports['Viewport: 1'].setValues(displayedObject=odb)
-    session.mdbData.summary()
-    session.animationController.setValues(animationType=NONE)
-    session.animationController.setValues(animationType=TIME_HISTORY, viewports=(
-        'Viewport: 1', ))
-    session.animationController.play(duration=UNLIMITED)
-    session.animationController.setValues(animationType=NONE)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=173.447, 
-        farPlane=406.35, width=525.758, height=214.859, viewOffsetX=9.69398, 
-        viewOffsetY=13.7338)
-    session.viewports['Viewport: 1'].view.fitView()
-
-
-def temp_G():
-    import section
-    import regionToolset
-    import displayGroupMdbToolset as dgm
-    import part
-    import material
-    import assembly
-    import step
-    import interaction
-    import load
-    import mesh
-    import optimization
-    import job
-    import sketch
-    import visualization
-    import xyPlot
-    import displayGroupOdbToolset as dgo
-    import connectorBehavior
-    mdb.models['3D_MODEL'].materials['soil'].elastic.setValues(dependencies=1, 
-        noTension=ON, table=((87.0, 1.0, 0.0), (88.0, 1.0, 1.0), (89.0, 1.0, 
-        2.0)))
-
-
-def soil_T():
-    import section
-    import regionToolset
-    import displayGroupMdbToolset as dgm
-    import part
-    import material
-    import assembly
-    import step
-    import interaction
-    import load
-    import mesh
-    import optimization
-    import job
-    import sketch
-    import visualization
-    import xyPlot
-    import displayGroupOdbToolset as dgo
-    import connectorBehavior
-    a = mdb.models['3D_MODEL'].rootAssembly
-    session.viewports['Viewport: 1'].setValues(displayedObject=a)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=235.027, 
-        farPlane=392.383, width=140.733, height=76.3862, cameraPosition=(
-        -145.199, -188.007, -193.705), cameraUpVector=(-0.182672, -0.380249, 
-        0.906665), cameraTarget=(-15.3671, 4.31759, 32.166), 
-        viewOffsetX=25.9542, viewOffsetY=-7.59472)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=246.843, 
-        farPlane=380.567, width=53.243, height=28.8988, viewOffsetX=1.71963, 
-        viewOffsetY=-30.1668)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    f1 = a.instances['soil-1'].faces
-    faces1 = f1.getSequenceFromMask(mask=('[#40422200 ]', ), )
-    e1 = a.instances['soil-1'].edges
-    edges1 = e1.getSequenceFromMask(mask=('[#20100000 #80 ]', ), )
-    region = a.Set(edges=edges1, faces=faces1, name='all_soil_bottom')
-    mdb.models['3D_MODEL'].TemperatureBC(name='BC-3', createStepName='Initial', 
-        region=region, distributionType=UNIFORM, fieldName='', magnitude=0.0)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=240.5, 
-        farPlane=386.91, width=121.516, height=65.9558, viewOffsetX=2.35941, 
-        viewOffsetY=-35.0703)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=212.011, 
-        farPlane=352.482, width=107.122, height=58.1428, cameraPosition=(
-        -45.4614, -199.161, 212.334), cameraUpVector=(0.0602942, 0.820806, 
-        0.568016), cameraTarget=(-2.38302, 60.1008, 23.1506), 
-        viewOffsetX=2.07992, viewOffsetY=-30.916)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=214.02, 
-        farPlane=350.473, width=113.421, height=61.5616, viewOffsetX=31.2181, 
-        viewOffsetY=-30.026)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    f1 = a.instances['soil-1'].faces
-    faces1 = f1.getSequenceFromMask(mask=('[#20881040 ]', ), )
-    e1 = a.instances['soil-1'].edges
-    edges1 = e1.getSequenceFromMask(mask=('[#80000000 #10 ]', ), )
-    region = a.Set(edges=edges1, faces=faces1, name='all_soil_top')
-    mdb.models['3D_MODEL'].TemperatureBC(name='top_T', createStepName='Initial', 
-        region=region, distributionType=UNIFORM, fieldName='', magnitude=0.0)
-    mdb.models['3D_MODEL'].boundaryConditions.changeKey(fromName='BC-3', 
-        toName='bottom_T')
-    session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='ini_disp')
-    session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='frequency')
-    session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='ini_disp')
+    set1 = mdb.models['3D_MODEL'].rootAssembly.allInstances['column-1'].sets['col_set']
+    leaf = dgm.LeafFromSets(sets=(set1, ))
+    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.remove(leaf=leaf)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=416.815, 
+        farPlane=655.86, width=136.433, height=75.9675, viewOffsetX=6.48013, 
+        viewOffsetY=-31.5688)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=418.907, 
+        farPlane=632.881, width=137.118, height=76.3489, cameraPosition=(
+        -472.708, -47.5887, 239.257), cameraUpVector=(0.669312, 0.0832373, 
+        0.738304), cameraTarget=(6.92887, -1.84767, 35.4721), 
+        viewOffsetX=6.51266, viewOffsetY=-31.7272)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=393.432, 
+        farPlane=631.496, width=128.78, height=71.7058, cameraPosition=(
+        -124.169, 477.657, 153.586), cameraUpVector=(-0.0215895, -0.551677, 
+        0.833779), cameraTarget=(-2.00815, -17.7356, 38.1116), 
+        viewOffsetX=6.1166, viewOffsetY=-29.7978)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=371.447, 
+        farPlane=640.666, width=121.584, height=67.6992, cameraPosition=(
+        362.864, 347.987, 78.0709), cameraUpVector=(-0.506066, -0.0350375, 
+        0.861783), cameraTarget=(-21.7703, -4.56848, 40.2149), 
+        viewOffsetX=5.77481, viewOffsetY=-28.1327)
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(viewCut=ON)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=373.301, 
+        farPlane=638.813, width=130.378, height=72.5958, viewOffsetX=7.14049, 
+        viewOffsetY=-24.8287)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=376.775, 
+        farPlane=630.462, width=131.591, height=73.2715, cameraPosition=(
+        453.567, 218.629, 44.8077), cameraUpVector=(-0.421104, 0.104398, 
+        0.900984), cameraTarget=(-21.7682, 0.186185, 41.4986), 
+        viewOffsetX=7.20695, viewOffsetY=-25.0598)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=375.581, 
+        farPlane=631.656, width=136.24, height=75.8598, viewOffsetX=13.598, 
+        viewOffsetY=-21.4555)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=373.287, 
+        farPlane=643.892, width=135.408, height=75.3965, cameraPosition=(
+        377.769, 336.702, 71.0252), cameraUpVector=(-0.434824, -0.0902399, 
+        0.895983), cameraTarget=(-16.5589, -5.6462, 39.7997), 
+        viewOffsetX=13.5149, viewOffsetY=-21.3245)
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(viewCut=OFF)
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(viewCut=ON)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=373.019, 
+        farPlane=644.159, width=156.328, height=87.0451, viewOffsetX=9.66228, 
+        viewOffsetY=-22.1384)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=381.854, 
+        farPlane=639.466, width=160.031, height=89.1067, cameraPosition=(
+        216.394, 392.785, 258.429), cameraUpVector=(-0.601931, -0.447397, 
+        0.661449), cameraTarget=(-19.0746, -15.5776, 31.5677), 
+        viewOffsetX=9.89112, viewOffsetY=-22.6627)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=387.727, 
+        farPlane=633.592, width=125.436, height=69.8443, viewOffsetX=2.38872, 
+        viewOffsetY=-20.6289)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=409.613, 
+        farPlane=608.116, width=132.517, height=73.7869, cameraPosition=(
+        379.656, 44.8134, 349.546), cameraUpVector=(-0.760376, -0.427095, 
+        0.489304), cameraTarget=(-25.8746, -14.053, 24.352), 
+        viewOffsetX=2.52356, viewOffsetY=-21.7933)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=403.805, 
+        farPlane=613.924, width=189.999, height=105.793, viewOffsetX=-41.4131, 
+        viewOffsetY=-6.57812)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=401.083, 
+        farPlane=616.647, width=188.718, height=105.08, viewOffsetX=11.2585, 
+        viewOffsetY=-25.0979)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=409.58, 
+        farPlane=608.15, width=141.488, height=78.7822, viewOffsetX=23.3932, 
+        viewOffsetY=-33.5428)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=429.861, 
+        farPlane=642.333, width=148.494, height=82.6833, cameraPosition=(
+        46.8502, 476.308, 256.627), cameraUpVector=(-0.354834, -0.633963, 
+        0.687156), cameraTarget=(8.98039, -2.43367, 49.1574), 
+        viewOffsetX=24.5516, viewOffsetY=-35.2038)
     session.viewports['Viewport: 1'].assemblyDisplay.setValues(
-        step='modal_dynamics')
-    session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='frequency')
-    session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='ini_disp')
-    session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
-        predefinedFields=OFF, connectors=OFF, adaptiveMeshConstraints=ON)
-    mdb.models['3D_MODEL'].CoupledTempDisplacementStep(name='Step-4', 
-        previous='modal_dynamics', deltmx=1.0)
-    session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Step-4')
-    session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
-        predefinedFields=ON, connectors=ON, adaptiveMeshConstraints=OFF)
-    session.viewports['Viewport: 1'].partDisplay.setValues(sectionAssignments=OFF, 
-        engineeringFeatures=OFF)
-    session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
-        referenceRepresentation=ON)
-    p1 = mdb.models['3D_MODEL'].parts['soil']
-    session.viewports['Viewport: 1'].setValues(displayedObject=p1)
-    session.viewports['Viewport: 1'].partDisplay.setValues(sectionAssignments=ON, 
-        engineeringFeatures=ON)
-    session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
-        referenceRepresentation=OFF)
+        activeCutName='Y-Plane', viewCut=ON)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=438.112, 
+        farPlane=634.082, width=89.5407, height=49.8572, viewOffsetX=-15.098, 
+        viewOffsetY=-43.3773)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=433.176, 
+        farPlane=668.613, width=88.5319, height=49.2955, cameraPosition=(
+        246.61, 397.498, 306.43), cameraUpVector=(-0.326294, -0.668022, 
+        0.668789), cameraTarget=(22.8065, -4.10452, 56.8337), 
+        viewOffsetX=-14.9279, viewOffsetY=-42.8885)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=433.269, 
+        farPlane=668.519, width=88.5509, height=49.3061, cameraPosition=(
+        247.022, 397.185, 306.563), cameraUpVector=(-0.318588, -0.672092, 
+        0.668427), cameraTarget=(23.2188, -4.41711, 56.9669), 
+        viewOffsetX=-14.9311, viewOffsetY=-42.8977)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=421.784, 
+        farPlane=680.002, width=196.981, height=109.681, viewOffsetX=10.0325, 
+        viewOffsetY=-19.6772)
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+        activeCutName='X-Plane', viewCut=ON)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=426.96, 
+        farPlane=678.545, width=199.398, height=111.027, cameraPosition=(
+        545.958, 95.2016, -0.238111), cameraUpVector=(-0.199226, -0.299619, 
+        0.933026), cameraTarget=(37.4792, -20.6863, 40.8683), 
+        viewOffsetX=10.1556, viewOffsetY=-19.9187)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=426.481, 
+        farPlane=679.025, width=199.174, height=110.902, cameraPosition=(
+        544.757, 102.138, 4.4621), cameraUpVector=(-0.257542, -0.0321445, 
+        0.965732), cameraTarget=(36.2783, -13.7499, 45.5685), 
+        viewOffsetX=10.1442, viewOffsetY=-19.8964)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=436.755, 
+        farPlane=668.75, width=132.674, height=73.8741, viewOffsetX=-2.17582, 
+        viewOffsetY=-31.0646)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=442.177, 
+        farPlane=662.857, width=134.321, height=74.7913, cameraPosition=(
+        489.129, 66.2434, 263.267), cameraUpVector=(-0.699584, 0.145677, 
+        0.699544), cameraTarget=(15.4417, -9.67705, 54.6366), 
+        viewOffsetX=-2.20283, viewOffsetY=-31.4503)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=453.083, 
+        farPlane=651.951, width=57.4946, height=32.0136, viewOffsetX=-26.6479, 
+        viewOffsetY=-31.5905)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=467.076, 
+        farPlane=667.382, width=59.2703, height=33.0023, cameraPosition=(
+        510.488, -87.0356, 246.647), cameraUpVector=(-0.620206, 0.228445, 
+        0.750438), cameraTarget=(27.21, -18.0747, 58.6129), 
+        viewOffsetX=-27.4708, viewOffsetY=-32.5661)
     a = mdb.models['3D_MODEL'].rootAssembly
-    session.viewports['Viewport: 1'].setValues(displayedObject=a)
-    session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Initial')
-
-
-def mesh_column():
-    import section
-    import regionToolset
-    import displayGroupMdbToolset as dgm
-    import part
-    import material
-    import assembly
-    import step
-    import interaction
-    import load
-    import mesh
-    import optimization
-    import job
-    import sketch
-    import visualization
-    import xyPlot
-    import displayGroupOdbToolset as dgo
-    import connectorBehavior
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=227.297, 
-        farPlane=407.149, width=168.966, height=94.0822, cameraPosition=(
-        -197.033, -113.771, 243.762), cameraUpVector=(0.57938, 0.692318, 
-        0.430132), cameraTarget=(4.12772, 0.726357, 31.758), 
-        viewOffsetX=-7.57213, viewOffsetY=-6.06154)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    c1 = a.instances['column-1'].cells
-    pickedRegions = c1.getSequenceFromMask(mask=('[#2 ]', ), )
-    a.setMeshControls(regions=pickedRegions, elemShape=TET, technique=FREE)
-    elemType1 = mesh.ElemType(elemCode=C3D20R)
-    elemType2 = mesh.ElemType(elemCode=C3D15)
-    elemType3 = mesh.ElemType(elemCode=C3D10)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    c1 = a.instances['column-1'].cells
-    cells = c1.getSequenceFromMask(mask=('[#2 ]', ), )
-    pickedRegions =(cells, )
-    a.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2, 
-        elemType3))
-    i1 = mdb.models['3D_MODEL'].rootAssembly.allInstances['soil-1']
-    leaf = dgm.LeafFromInstance(instances=(i1, ))
+    c1 = a.instances['soil-1'].cells
+    cells1 = c1.getSequenceFromMask(mask=('[#1 ]', ), )
+    leaf = dgm.LeafFromGeometry(cellSeq=cells1)
     session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.remove(leaf=leaf)
     a = mdb.models['3D_MODEL'].rootAssembly
-    c1 = a.instances['column-1'].cells
-    pickedRegions = c1.getSequenceFromMask(mask=('[#3 ]', ), )
-    a.setMeshControls(regions=pickedRegions, elemShape=HEX, technique=SWEEP, 
-        algorithm=MEDIAL_AXIS)
-    elemType1 = mesh.ElemType(elemCode=C3D8R)
-    elemType2 = mesh.ElemType(elemCode=C3D6)
-    elemType3 = mesh.ElemType(elemCode=C3D4)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    c1 = a.instances['column-1'].cells
-    cells = c1.getSequenceFromMask(mask=('[#3 ]', ), )
-    pickedRegions =(cells, )
-    a.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2, 
-        elemType3))
-
-
-def mesh_finite_soil():
-    import section
-    import regionToolset
-    import displayGroupMdbToolset as dgm
-    import part
-    import material
-    import assembly
-    import step
-    import interaction
-    import load
-    import mesh
-    import optimization
-    import job
-    import sketch
-    import visualization
-    import xyPlot
-    import displayGroupOdbToolset as dgo
-    import connectorBehavior
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=233.696, 
-        farPlane=406.913, width=173.723, height=96.731, cameraPosition=(
-        -280.891, -114.129, -96.7423), cameraUpVector=(-0.103323, 0.190537, 
-        0.976227), cameraTarget=(-9.5024, -6.00175, 18.0523), 
-        viewOffsetX=-7.78531, viewOffsetY=-6.2322)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=234.05, 
-        farPlane=409.871, width=173.986, height=96.8774, cameraPosition=(
-        -257.75, -133.86, 147.049), cameraUpVector=(0.524667, 0.455835, 
-        0.718985), cameraTarget=(-0.957848, -3.30747, 22.4094), 
-        viewOffsetX=-7.79709, viewOffsetY=-6.24163)
+    c1 = a.instances['soil-1'].cells
+    cells1 = c1.getSequenceFromMask(mask=('[#2 ]', ), )
+    leaf = dgm.LeafFromGeometry(cellSeq=cells1)
+    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.remove(leaf=leaf)
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(viewCut=OFF)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=457.349, 
+        farPlane=677.11, width=147.244, height=81.9869, viewOffsetX=-22.4673, 
+        viewOffsetY=-27.1742)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=407.2, 
+        farPlane=668.536, width=131.098, height=72.9969, cameraPosition=(
+        373.581, 290.423, 270.698), cameraUpVector=(-0.77708, -0.0620185, 
+        0.626339), cameraTarget=(-5.73534, 5.45659, 50.283), 
+        viewOffsetX=-20.0037, viewOffsetY=-24.1945)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=408.359, 
+        farPlane=667.375, width=155.808, height=86.7555, viewOffsetX=-44.924, 
+        viewOffsetY=-38.3165)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=373.056, 
+        farPlane=618.252, width=142.338, height=79.2554, cameraPosition=(
+        110.908, 451.616, 199.7), cameraUpVector=(-0.156384, -0.520134, 
+        0.839646), cameraTarget=(-21.8654, -39.6212, 78.3456), 
+        viewOffsetX=-41.0403, viewOffsetY=-35.004)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=369.993, 
+        farPlane=621.315, width=199.033, height=110.824, viewOffsetX=-40.4508, 
+        viewOffsetY=-27.0016)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=372.542, 
+        farPlane=651.04, width=200.404, height=111.587, cameraPosition=(238.05, 
+        401.623, 231.507), cameraUpVector=(-0.454476, -0.43203, 0.778975), 
+        cameraTarget=(-28.4708, -17.5455, 67.3904), viewOffsetX=-40.7295, 
+        viewOffsetY=-27.1876)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=372.183, 
+        farPlane=651.399, width=200.211, height=111.48, cameraPosition=(
+        236.537, 408.56, 216.245), cameraUpVector=(-0.634156, -0.292955, 
+        0.715559), cameraTarget=(-29.9839, -10.6081, 52.1288), 
+        viewOffsetX=-40.6902, viewOffsetY=-27.1614)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=456.129, 
+        farPlane=650.387, width=245.369, height=136.624, cameraPosition=(
+        306.534, 84.9103, 466.251), cameraUpVector=(-0.957539, 0.0548957, 
+        0.283029), cameraTarget=(-2.52535, 23.7454, 48.6253), 
+        viewOffsetX=-49.8679, viewOffsetY=-33.2876)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=473.304, 
+        farPlane=692.617, width=254.608, height=141.768, cameraPosition=(
+        98.0049, -370.64, 454.096), cameraUpVector=(-0.64729, 0.696517, 
+        0.309646), cameraTarget=(34.8985, -11.9693, 78.5396), 
+        viewOffsetX=-51.7456, viewOffsetY=-34.541)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=462.445, 
+        farPlane=680.311, width=248.766, height=138.516, cameraPosition=(
+        333.206, -83.0499, 472.297), cameraUpVector=(-0.729373, 0.637839, 
+        0.247339), cameraTarget=(52.9731, 34.9642, 46.6074), 
+        viewOffsetX=-50.5584, viewOffsetY=-33.7485)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=452.092, 
+        farPlane=690.663, width=372.23, height=207.262, viewOffsetX=-75.3257, 
+        viewOffsetY=-49.3981)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=367.863, 
+        farPlane=642.026, width=302.88, height=168.647, cameraPosition=(
+        -90.8049, 471.719, 196.762), cameraUpVector=(-0.821926, -0.186419, 
+        -0.538224), cameraTarget=(-22.4153, 32.8822, -79.6691), 
+        viewOffsetX=-61.2919, viewOffsetY=-40.1948)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=390.102, 
+        farPlane=619.787, width=227.045, height=126.421, viewOffsetX=-59.5025, 
+        viewOffsetY=-33.878)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=392.137, 
+        farPlane=593.365, width=228.23, height=127.081, cameraPosition=(
+        163.287, -82.7696, 478.735), cameraUpVector=(-0.925379, 0.352037, 
+        0.140513), cameraTarget=(-28.5973, 89.8044, 23.688), 
+        viewOffsetX=-59.813, viewOffsetY=-34.0548)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=407.091, 
+        farPlane=578.412, width=148.315, height=82.5835, viewOffsetX=-64.4039, 
+        viewOffsetY=-7.91591)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=402.625, 
+        farPlane=582.877, width=146.688, height=81.6777, viewOffsetX=-54.1633, 
+        viewOffsetY=-39.6834)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=399.486, 
+        farPlane=586.016, width=191.944, height=106.877, viewOffsetX=-50.5098, 
+        viewOffsetY=-42.2396)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=371.222, 
+        farPlane=632.208, width=178.364, height=99.3148, cameraPosition=(
+        238.035, 320.812, 327.307), cameraUpVector=(-0.66134, -0.464078, 
+        0.589289), cameraTarget=(-79.3216, 25.4935, 34.4912), 
+        viewOffsetX=-46.9361, viewOffsetY=-39.251)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=385.853, 
+        farPlane=617.577, width=91.8782, height=51.1587, viewOffsetX=-90.6043, 
+        viewOffsetY=-26.5392)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=384.459, 
+        farPlane=618.97, width=91.5464, height=50.974, viewOffsetX=-70.6418, 
+        viewOffsetY=-29.8416)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=373.478, 
+        farPlane=629.951, width=195.95, height=109.107, viewOffsetX=-74.6224, 
+        viewOffsetY=-33.7108)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=370.498, 
+        farPlane=632.931, width=194.386, height=108.236, viewOffsetX=-63.1977, 
+        viewOffsetY=-33.4419)
     a = mdb.models['3D_MODEL'].rootAssembly
     c1 = a.instances['soil-1'].cells
-    pickedRegions = c1.getSequenceFromMask(mask=('[#3 ]', ), )
-    a.setMeshControls(regions=pickedRegions, elemShape=TET, technique=FREE)
-
-
-def mesh_infinites():
-    import section
-    import regionToolset
-    import displayGroupMdbToolset as dgm
-    import part
-    import material
-    import assembly
-    import step
-    import interaction
-    import load
-    import mesh
-    import optimization
-    import job
-    import sketch
-    import visualization
-    import xyPlot
-    import displayGroupOdbToolset as dgo
-    import connectorBehavior
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=241.318, 
-        farPlane=386.672, width=214.229, height=118.199, cameraPosition=(
-        -32.2048, 94.5367, 320.201), cameraUpVector=(0.0894254, 0.79768, 
-        -0.596415), cameraTarget=(2.68304, -0.381521, 23.0554), 
-        viewOffsetX=1.21614, viewOffsetY=0.613647)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=258.095, 
-        farPlane=369.894, width=88.4619, height=48.8078, viewOffsetX=56.3625, 
-        viewOffsetY=11.0652)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=256.79, 
-        farPlane=371.199, width=88.0145, height=48.561, viewOffsetX=26.8169, 
-        viewOffsetY=5.57906)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=249.327, 
-        farPlane=378.662, width=165.377, height=91.2448, viewOffsetX=64.5108, 
-        viewOffsetY=11.1964)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=246.963, 
-        farPlane=381.026, width=163.809, height=90.3799, viewOffsetX=18.6856, 
-        viewOffsetY=-0.171172)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=246.449, 
-        farPlane=381.54, width=191.261, height=105.526, viewOffsetX=59.2791, 
-        viewOffsetY=-26.4601)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=243.95, 
-        farPlane=384.04, width=189.322, height=104.456, cameraPosition=(
-        -31.3759, 96.0669, 319.81), cameraUpVector=(0.109588, 0.797074, 
-        -0.593854), cameraTarget=(3.51193, 1.14873, 22.6639), 
-        viewOffsetX=58.6779, viewOffsetY=-26.1918)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=284.593, 
-        farPlane=419.946, width=220.864, height=121.859, cameraPosition=(
-        87.5795, -1.40648, 365.108), cameraUpVector=(-0.381011, 0.874504, 
-        -0.300124), cameraTarget=(-3.00701, -24.0763, 65.4375), 
-        viewOffsetX=68.4539, viewOffsetY=-30.5555)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=280.98, 
-        farPlane=423.559, width=218.06, height=120.312, viewOffsetX=65.085, 
-        viewOffsetY=22.8773)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=304.963, 
-        farPlane=399.576, width=27.1752, height=14.9936, viewOffsetX=36.8637, 
-        viewOffsetY=50.7653)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    c1 = a.instances['soil-1'].cells
-    pickedRegions = c1.getSequenceFromMask(mask=('[#3c ]', ), )
+    pickedRegions = c1.getSequenceFromMask(mask=('[#3f ]', ), )
     a.deleteMesh(regions=pickedRegions)
     a = mdb.models['3D_MODEL'].rootAssembly
-    c1 = a.instances['soil-1'].cells
-    pickedRegions = c1.getSequenceFromMask(mask=('[#3c ]', ), )
-    a.setMeshControls(regions=pickedRegions, technique=SWEEP, 
-        algorithm=ADVANCING_FRONT)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    c1 = a.instances['soil-1'].cells
     e1 = a.instances['soil-1'].edges
-    a.setSweepPath(region=c1[2], edge=e1[20], sense=FORWARD)
+    pickedEdges = e1.getSequenceFromMask(mask=('[#24825b40 #21 ]', ), )
+    a.seedEdgeBySize(edges=pickedEdges, size=2.0, deviationFactor=0.1, 
+        minSizeFactor=0.1, constraint=FINER)
     a = mdb.models['3D_MODEL'].rootAssembly
-    c11 = a.instances['soil-1'].cells
-    e11 = a.instances['soil-1'].edges
-    a.setSweepPath(region=c11[3], edge=e11[30], sense=REVERSE)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    c1 = a.instances['soil-1'].cells
     e1 = a.instances['soil-1'].edges
-    a.setSweepPath(region=c1[4], edge=e1[30], sense=REVERSE)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    c11 = a.instances['soil-1'].cells
-    e11 = a.instances['soil-1'].edges
-    a.setSweepPath(region=c11[5], edge=e11[18], sense=REVERSE)
+    edges1 = e1.getSequenceFromMask(mask=('[#24825b40 #21 ]', ), )
+    a.Set(edges=edges1, name='soil_vertical_edges')
 
 
-def fix_base():
+def sweeppath():
     import section
     import regionToolset
     import displayGroupMdbToolset as dgm
@@ -425,26 +268,53 @@ def fix_base():
     import xyPlot
     import displayGroupOdbToolset as dgo
     import connectorBehavior
-    del mdb.models['3D_MODEL'].boundaryConditions['fixed_base']
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=244.595, 
-        farPlane=416.081, width=159.352, height=87.6115, cameraPosition=(
-        113.103, -211.6, -205.841), cameraUpVector=(-0.72006, -0.494653, 
-        0.486654), cameraTarget=(-11.7167, -25.3253, 13.8031), 
-        viewOffsetX=6.06486, viewOffsetY=-29.0215)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=240.271, 
-        farPlane=420.404, width=196.705, height=108.148, viewOffsetX=-4.29346, 
-        viewOffsetY=-25.1243)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=391.306, 
+        farPlane=625.636, width=351.274, height=195.593, viewOffsetX=-59.1031, 
+        viewOffsetY=19.0951)
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(mesh=OFF)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=408.38, 
+        farPlane=608.562, width=209.432, height=116.614, viewOffsetX=-34.9767, 
+        viewOffsetY=13.3424)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=405.402, 
+        farPlane=611.541, width=207.905, height=115.764, viewOffsetX=14.1176, 
+        viewOffsetY=7.26394)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=416.097, 
+        farPlane=579.651, width=213.39, height=118.818, cameraPosition=(
+        138.856, -125.04, 474.355), cameraUpVector=(-0.97241, 0.22949, 
+        -0.0418656), cameraTarget=(9.9609, -1.02718, -17.2522), 
+        viewOffsetX=14.49, viewOffsetY=7.45558)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=414.931, 
+        farPlane=580.818, width=246.954, height=137.507, viewOffsetX=11.9869, 
+        viewOffsetY=3.78465)
+    session.viewports['Viewport: 1'].assemblyDisplay.meshOptions.setValues(
+        seeds=OFF)
     a = mdb.models['3D_MODEL'].rootAssembly
-    f1 = a.instances['soil-1'].faces
-    faces1 = f1.getSequenceFromMask(mask=('[#80844400 ]', ), )
-    region = a.Set(faces=faces1, name='all_soil_base')
-    mdb.models['3D_MODEL'].DisplacementBC(name='fixed_base', 
-        createStepName='Initial', region=region, u1=SET, u2=SET, u3=SET, 
-        ur1=UNSET, ur2=UNSET, ur3=UNSET, amplitude=UNSET, 
-        distributionType=UNIFORM, fieldName='', localCsys=None)
+    c1 = a.instances['soil-1'].cells
+    cells1 = c1.getSequenceFromMask(mask=('[#3c ]', ), )
+    leaf = dgm.LeafFromGeometry(cellSeq=cells1)
+    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.intersect(
+        leaf=leaf)
+    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.undoLast()
+    a = mdb.models['3D_MODEL'].rootAssembly
+    c1 = a.instances['soil-1'].cells
+    cells1 = c1.getSequenceFromMask(mask=('[#3c ]', ), )
+    leaf = dgm.LeafFromGeometry(cellSeq=cells1)
+    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.remove(leaf=leaf)
+    session.viewports['Viewport: 1'].view.setValues(nearPlane=379.454, 
+        farPlane=636.327, width=225.839, height=125.75, cameraPosition=(
+        437.144, -132.677, 234.687), cameraUpVector=(-0.65778, 0.322565, 
+        0.680645), cameraTarget=(-9.59841, -0.718207, -3.38636), 
+        viewOffsetX=10.962, viewOffsetY=3.46106)
+    p1 = mdb.models['3D_MODEL'].parts['soil']
+    session.viewports['Viewport: 1'].setValues(displayedObject=p1)
+    session.viewports['Viewport: 1'].partDisplay.setValues(mesh=ON)
+    session.viewports['Viewport: 1'].partDisplay.meshOptions.setValues(
+        meshTechnique=ON)
+    session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+        referenceRepresentation=OFF)
 
 
-def surfaces():
+def geostatic():
     import section
     import regionToolset
     import displayGroupMdbToolset as dgm
@@ -463,81 +333,24 @@ def surfaces():
     import displayGroupOdbToolset as dgo
     import connectorBehavior
     a = mdb.models['3D_MODEL'].rootAssembly
-    s1 = a.instances['soil-1'].faces
-    side1Faces1 = s1.getSequenceFromMask(mask=('[#2000000 ]', ), )
-    a.Surface(side1Faces=side1Faces1, name='soil_col_out_surf')
-    srf1 = mdb.models['3D_MODEL'].rootAssembly.surfaces['soil_col_out_surf']
-    leaf = dgm.LeafFromMeshSurfaceSets(surfaceSets=(srf1, ))
-    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.remove(leaf=leaf)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    s1 = a.instances['soil-1'].faces
-    side1Faces1 = s1.getSequenceFromMask(mask=('[#4000000 ]', ), )
-    a.Surface(side1Faces=side1Faces1, name='soil_col_in_surf')
-    srf1 = mdb.models['3D_MODEL'].rootAssembly.surfaces['soil_col_in_surf']
-    leaf = dgm.LeafFromMeshSurfaceSets(surfaceSets=(srf1, ))
-    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.remove(leaf=leaf)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=268.262, 
-        farPlane=414.972, width=63.0224, height=34.6497, viewOffsetX=3.38416, 
-        viewOffsetY=-6.42226)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=268.425, 
-        farPlane=414.774, width=63.0607, height=34.6707, cameraPosition=(
-        -9.47226, -300.458, 170.424), cameraUpVector=(0.0360569, 0.724187, 
-        0.68866), cameraTarget=(55.8969, -2.88159, 18.7971), 
-        viewOffsetX=3.38621, viewOffsetY=-6.42616)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=275.487, 
-        farPlane=407.713, width=6.58053, height=3.61797, viewOffsetX=1.88279, 
-        viewOffsetY=-8.68659)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    s1 = a.instances['soil-1'].faces
-    side1Faces1 = s1.getSequenceFromMask(mask=('[#8000000 ]', ), )
-    a.Surface(side1Faces=side1Faces1, name='soil_col_bottom_surf')
-    srf1 = mdb.models['3D_MODEL'].rootAssembly.surfaces['soil_col_bottom_surf']
-    leaf = dgm.LeafFromMeshSurfaceSets(surfaceSets=(srf1, ))
-    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.remove(leaf=leaf)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=270.154, 
-        farPlane=413.046, width=55.6917, height=30.6192, viewOffsetX=15.1685, 
-        viewOffsetY=-8.37812)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=269.347, 
-        farPlane=413.853, width=55.5252, height=30.5277, viewOffsetX=-25.0814, 
-        viewOffsetY=-8.20678)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=270.634, 
-        farPlane=412.566, width=42.6872, height=23.4694, viewOffsetX=-29.876, 
-        viewOffsetY=-7.95828)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=270.971, 
-        farPlane=412.229, width=42.7404, height=23.4986, viewOffsetX=-32.3169, 
-        viewOffsetY=-7.44267)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=273.311, 
-        farPlane=409.889, width=22.7551, height=12.5107, viewOffsetX=-39.3084, 
-        viewOffsetY=-7.27304)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    s1 = a.instances['column-1'].faces
-    side1Faces1 = s1.getSequenceFromMask(mask=('[#2 ]', ), )
-    a.Surface(side1Faces=side1Faces1, name='col_soil_out_surf')
-    srf1 = mdb.models['3D_MODEL'].rootAssembly.surfaces['col_soil_out_surf']
-    leaf = dgm.LeafFromMeshSurfaceSets(surfaceSets=(srf1, ))
-    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.remove(leaf=leaf)
+    session.viewports['Viewport: 1'].setValues(displayedObject=a)
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+        predefinedFields=ON, connectors=ON)
+    session.viewports['Viewport: 1'].assemblyDisplay.meshOptions.setValues(
+        meshTechnique=OFF)
+    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.undoLast()
     session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.undoLast()
     session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.redoLast()
     a = mdb.models['3D_MODEL'].rootAssembly
-    s1 = a.instances['column-1'].faces
-    side1Faces1 = s1.getSequenceFromMask(mask=('[#4 ]', ), )
-    a.Surface(side1Faces=side1Faces1, name='col_soil_in_surf')
-    srf1 = mdb.models['3D_MODEL'].rootAssembly.surfaces['col_soil_in_surf']
-    leaf = dgm.LeafFromMeshSurfaceSets(surfaceSets=(srf1, ))
-    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.remove(leaf=leaf)
-    session.viewports['Viewport: 1'].view.setValues(nearPlane=274.748, 
-        farPlane=408.453, width=12.0742, height=6.6384, viewOffsetX=-42.8025, 
-        viewOffsetY=-9.2596)
-    a = mdb.models['3D_MODEL'].rootAssembly
-    s1 = a.instances['column-1'].faces
-    side1Faces1 = s1.getSequenceFromMask(mask=('[#40 ]', ), )
-    a.Surface(side1Faces=side1Faces1, name='col_soil_bottom_surf')
-    srf1 = mdb.models['3D_MODEL'].rootAssembly.surfaces['col_soil_bottom_surf']
-    leaf = dgm.LeafFromMeshSurfaceSets(surfaceSets=(srf1, ))
-    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.remove(leaf=leaf)
+    c1 = a.instances['soil-1'].cells
+    cells1 = c1.getSequenceFromMask(mask=('[#7f ]', ), )
+    region = regionToolset.Region(cells=cells1)
+    mdb.models['3D_MODEL'].GeostaticStress(name='geostatic_field', region=region, 
+        stressMag1=0.0, vCoord1=6.0, stressMag2=800.0, vCoord2=20.0, 
+        lateralCoeff1=0.5, lateralCoeff2=None)
 
 
-def assign_soil_sec():
+def geostatic_step():
     import section
     import regionToolset
     import displayGroupMdbToolset as dgm
@@ -555,13 +368,74 @@ def assign_soil_sec():
     import xyPlot
     import displayGroupOdbToolset as dgo
     import connectorBehavior
-    p = mdb.models['3D_MODEL'].parts['soil']
-    c = p.cells
-    cells = c.getSequenceFromMask(mask=('[#7f ]', ), )
-    region = p.Set(cells=cells, name='sdfsad')
-    p = mdb.models['3D_MODEL'].parts['soil']
-    p.SectionAssignment(region=region, sectionName='soil_section', offset=0.0, 
-        offsetType=MIDDLE_SURFACE, offsetField='', 
-        thicknessAssignment=FROM_SECTION)
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+        predefinedFields=OFF, connectors=OFF, adaptiveMeshConstraints=ON)
+    mdb.models['3D_MODEL'].GeostaticStep(name='Step-4', previous='Initial')
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Step-4')
+
+
+def static():
+    import section
+    import regionToolset
+    import displayGroupMdbToolset as dgm
+    import part
+    import material
+    import assembly
+    import step
+    import interaction
+    import load
+    import mesh
+    import optimization
+    import job
+    import sketch
+    import visualization
+    import xyPlot
+    import displayGroupOdbToolset as dgo
+    import connectorBehavior
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+        predefinedFields=OFF, connectors=OFF, adaptiveMeshConstraints=ON)
+    mdb.models['3D_MODEL'].StaticStep(name='static', previous='geostatic')
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='static')
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+        predefinedFields=ON, connectors=ON, adaptiveMeshConstraints=OFF)
+    i1 = mdb.models['3D_MODEL'].rootAssembly.allInstances['column-1']
+    leaf = dgm.LeafFromInstance(instances=(i1, ))
+    session.viewports['Viewport: 1'].assemblyDisplay.displayGroup.replace(
+        leaf=leaf)
+    a = mdb.models['3D_MODEL'].rootAssembly
+    c1 = a.instances['column-1'].cells
+    cells1 = c1.getSequenceFromMask(mask=('[#3 ]', ), )
+    region = regionToolset.Region(cells=cells1)
+    mdb.models['3D_MODEL'].Gravity(name='gravity_static', createStepName='static', 
+        comp3=-1.0, distributionType=UNIFORM, field='', region=region)
+
+
+def gravity_geo():
+    import section
+    import regionToolset
+    import displayGroupMdbToolset as dgm
+    import part
+    import material
+    import assembly
+    import step
+    import interaction
+    import load
+    import mesh
+    import optimization
+    import job
+    import sketch
+    import visualization
+    import xyPlot
+    import displayGroupOdbToolset as dgo
+    import connectorBehavior
+    del mdb.models['3D_MODEL'].loads['gravity_geostatic']
+    session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='geostatic')
+    a = mdb.models['3D_MODEL'].rootAssembly
+    c1 = a.instances['soil-1'].cells
+    cells1 = c1.getSequenceFromMask(mask=('[#7f ]', ), )
+    region = regionToolset.Region(cells=cells1)
+    mdb.models['3D_MODEL'].Gravity(name='gravity_geostatic', 
+        createStepName='geostatic', comp3=-9.81, distributionType=UNIFORM, 
+        field='', region=region)
 
 

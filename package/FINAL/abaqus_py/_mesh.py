@@ -28,7 +28,7 @@ def assign_properties(infinite_bottom):
     pickedRegions = c1.getSequenceFromMask(mask=('[#3 ]',), )
     a.setMeshControls(regions=pickedRegions, elemShape=HEX, technique=SWEEP,
                       algorithm=MEDIAL_AXIS)
-    # C3D elements
+    # C3D8 elements
     elemType1 = mesh.ElemType(elemCode=C3D8)
     elemType2 = mesh.ElemType(elemCode=C3D6)
     elemType3 = mesh.ElemType(elemCode=C3D4)
@@ -40,12 +40,12 @@ def assign_properties(infinite_bottom):
                                                        elemType3))
 
     # finite soil
-    # tet meshing
+    # hex meshing
     a = mdb.models['3D_MODEL'].rootAssembly
     c1 = a.instances['soil-1'].cells
     pickedRegions = c1.getSequenceFromMask(mask=('[#3 ]', ), )
-    a.setMeshControls(regions=pickedRegions, elemShape=TET, technique=FREE)
-    # C3D elements
+    a.setMeshControls(regions=pickedRegions, elemShape=HEX, technique=SWEEP, algorithm=MEDIAL_AXIS)
+    # C3D8 elements
     elemType1 = mesh.ElemType(elemCode=C3D8)
     elemType2 = mesh.ElemType(elemCode=C3D6)
     elemType3 = mesh.ElemType(elemCode=C3D4)
@@ -56,7 +56,30 @@ def assign_properties(infinite_bottom):
     a.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2,
         elemType3))
 
-    #, algorithm=MEDIAL_AXIS
+
+    # soil center
+    # create set
+    a = mdb.models['3D_MODEL'].rootAssembly
+    c1 = a.instances['soil-1'].cells
+    cells1 = c1.getSequenceFromMask(mask=('[#40 ]',), )
+    a.Set(cells=cells1, name='soil_center')
+    # sweep
+    a = mdb.models['3D_MODEL'].rootAssembly
+    c1 = a.instances['soil-1'].cells
+    pickedRegions = c1.getSequenceFromMask(mask=('[#40 ]',), )
+    a.setMeshControls(regions=pickedRegions, elemShape=HEX, technique=SWEEP,
+                      algorithm=MEDIAL_AXIS)
+    # C3D8
+    elemType1 = mesh.ElemType(elemCode=C3D8R)
+    elemType2 = mesh.ElemType(elemCode=C3D6)
+    elemType3 = mesh.ElemType(elemCode=C3D4)
+    a = mdb.models['3D_MODEL'].rootAssembly
+    c1 = a.instances['soil-1'].cells
+    cells = c1.getSequenceFromMask(mask=('[#40 ]',), )
+    pickedRegions = (cells,)
+    a.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2,
+                                                       elemType3))
+
 
     '''
     if infinite_bottom:
@@ -150,6 +173,17 @@ def seed(col_size, soil_size, contact_size):
     partInstances =(a.instances['soil-1'], )
     a.seedPartInstance(regions=partInstances, size=soil_size, deviationFactor=0.1,
         minSizeFactor=0.1)
+
+    # mesh soil vertical
+    a = mdb.models['3D_MODEL'].rootAssembly
+    e1 = a.instances['soil-1'].edges
+    pickedEdges = e1.getSequenceFromMask(mask=('[#24825b40 #21 ]', ), )
+    a.seedEdgeBySize(edges=pickedEdges, size=soil_size, deviationFactor=0.1,
+        minSizeFactor=0.1, constraint=FINER)
+    a = mdb.models['3D_MODEL'].rootAssembly
+    e1 = a.instances['soil-1'].edges
+    edges1 = e1.getSequenceFromMask(mask=('[#24825b40 #21 ]', ), )
+    a.Set(edges=edges1, name='soil_vertical_edges')
 
     a = mdb.models['3D_MODEL'].rootAssembly
     partInstances =(a.instances['column-1'], )

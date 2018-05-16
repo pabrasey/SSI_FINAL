@@ -20,6 +20,17 @@ import xyPlot
 import displayGroupOdbToolset as dgo
 import connectorBehavior
 
+
+def soil_initial_conditions(zero_h):
+    # initial conditions
+    a = mdb.models['3D_MODEL'].rootAssembly
+    c1 = a.instances['soil-1'].cells
+    cells1 = c1.getSequenceFromMask(mask=('[#7f ]',), )
+    region = regionToolset.Region(cells=cells1)
+    mdb.models['3D_MODEL'].GeostaticStress(name='geostatic_field', region=region,
+                                           stressMag1=0, vCoord1=zero_h, stressMag2=-200.0, vCoord2=zero_h - 10,
+                                           lateralCoeff1=0.5, lateralCoeff2=None)
+
 def fix_base_bc():
     a = mdb.models['3D_MODEL'].rootAssembly
     f1 = a.instances['soil-1'].faces
@@ -52,8 +63,19 @@ def ini_disp(disp):
         distributionType=UNIFORM, fieldName='', localCsys=None)
 
 def gravity():
-    mdb.models['3D_MODEL'].Gravity(name='gravity', createStepName='ini_disp',
-        comp3=-1.0, distributionType=UNIFORM, field='')
-    mdb.models['3D_MODEL'].Load(name='gravity_copy',
-        objectToCopy=mdb.models['3D_MODEL'].loads['gravity'],
-        toStepName='modal_dynamics')
+    # geostatic -> on soil
+    a = mdb.models['3D_MODEL'].rootAssembly
+    c1 = a.instances['soil-1'].cells
+    cells1 = c1.getSequenceFromMask(mask=('[#7f ]', ), )
+    region = regionToolset.Region(cells=cells1)
+    mdb.models['3D_MODEL'].Gravity(name='gravity_geostatic',
+        createStepName='geostatic', comp3=-9.81, distributionType=UNIFORM,
+        field='', region=region)
+
+    # static -> on column
+    a = mdb.models['3D_MODEL'].rootAssembly
+    c1 = a.instances['column-1'].cells
+    cells1 = c1.getSequenceFromMask(mask=('[#3 ]', ), )
+    region = regionToolset.Region(cells=cells1)
+    mdb.models['3D_MODEL'].Gravity(name='gravity_static', createStepName='static',
+        comp3=-9.81, distributionType=UNIFORM, field='', region=region)
