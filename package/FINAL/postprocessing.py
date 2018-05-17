@@ -8,7 +8,7 @@ import frequency
 
 results_dir = 'results/objects/'
 
-filenames = sorted([os.path.basename(x) for x in glob.glob(results_dir + '2018_5_15--17*')])
+filenames = sorted([os.path.basename(x) for x in glob.glob(results_dir + '2018_5_17*')])
 
 def show_result(filename):
 

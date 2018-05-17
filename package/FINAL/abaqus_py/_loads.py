@@ -28,7 +28,7 @@ def soil_initial_conditions(zero_h):
     cells1 = c1.getSequenceFromMask(mask=('[#7f ]',), )
     region = regionToolset.Region(cells=cells1)
     mdb.models['3D_MODEL'].GeostaticStress(name='geostatic_field', region=region,
-                                           stressMag1=0, vCoord1=zero_h, stressMag2=-200.0, vCoord2=zero_h - 10,
+                                           stressMag1=0, vCoord1=0, stressMag2= - 400.0e3, vCoord2= - 20,
                                            lateralCoeff1=0.5, lateralCoeff2=None)
 
 def fix_base_bc():
@@ -40,6 +40,7 @@ def fix_base_bc():
         createStepName='Initial', region=region, u1=SET, u2=SET, u3=SET,
         ur1=UNSET, ur2=UNSET, ur3=UNSET, amplitude=UNSET,
         distributionType=UNIFORM, fieldName='', localCsys=None)
+
 
 def fix_sides_bc():
     a = mdb.models['3D_MODEL'].rootAssembly
@@ -61,6 +62,7 @@ def ini_disp(disp):
         createStepName='ini_disp', region=region, u1=disp, u2=UNSET, u3=UNSET,
         ur1=UNSET, ur2=UNSET, ur3=UNSET, amplitude=UNSET, fixed=OFF,
         distributionType=UNIFORM, fieldName='', localCsys=None)
+
 
 def gravity():
     # geostatic -> on soil

@@ -28,11 +28,11 @@ class NumericalSystem:
         self.infinites_width = 4
         self.infinites_bottom = False
         self.fixed_sides = False
-        self.contact_col_soil = False # False -> tie constraints, True -> contact
+        self.contact_col_soil = True # False -> tie constraints, True -> contact
 
         # mesh
-        self.col_mesh_size = 5
-        self.soil_mesh_size = 5
+        self.col_mesh_size = 3
+        self.soil_mesh_size = 3
         self.contact_mesh_size = 2
 
         # frequency analysis

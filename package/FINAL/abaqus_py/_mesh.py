@@ -22,11 +22,11 @@ import connectorBehavior
 
 def assign_properties(infinite_bottom):
     # column
-    # hex meshing
+    # tet meshing
     a = mdb.models['3D_MODEL'].rootAssembly
     c1 = a.instances['column-1'].cells
     pickedRegions = c1.getSequenceFromMask(mask=('[#3 ]',), )
-    a.setMeshControls(regions=pickedRegions, elemShape=HEX, technique=SWEEP,
+    a.setMeshControls(regions=pickedRegions, elemShape=TET, technique=FREE,
                       algorithm=MEDIAL_AXIS)
     # C3D8 elements
     elemType1 = mesh.ElemType(elemCode=C3D8)
@@ -40,11 +40,11 @@ def assign_properties(infinite_bottom):
                                                        elemType3))
 
     # finite soil
-    # hex meshing
+    # tet meshing
     a = mdb.models['3D_MODEL'].rootAssembly
     c1 = a.instances['soil-1'].cells
     pickedRegions = c1.getSequenceFromMask(mask=('[#3 ]', ), )
-    a.setMeshControls(regions=pickedRegions, elemShape=HEX, technique=SWEEP, algorithm=MEDIAL_AXIS)
+    a.setMeshControls(regions=pickedRegions, elemShape=TET, technique=FREE, algorithm=MEDIAL_AXIS)
     # C3D8 elements
     elemType1 = mesh.ElemType(elemCode=C3D8)
     elemType2 = mesh.ElemType(elemCode=C3D6)
@@ -67,7 +67,7 @@ def assign_properties(infinite_bottom):
     a = mdb.models['3D_MODEL'].rootAssembly
     c1 = a.instances['soil-1'].cells
     pickedRegions = c1.getSequenceFromMask(mask=('[#40 ]',), )
-    a.setMeshControls(regions=pickedRegions, elemShape=HEX, technique=SWEEP,
+    a.setMeshControls(regions=pickedRegions, elemShape=TET, technique=FREE,
                       algorithm=MEDIAL_AXIS)
     # C3D8
     elemType1 = mesh.ElemType(elemCode=C3D8R)

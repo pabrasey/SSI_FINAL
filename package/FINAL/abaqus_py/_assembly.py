@@ -31,7 +31,8 @@ def assemble_parts(soil_depth, column_depth):
 
     # translate column
     a = mdb.models['3D_MODEL'].rootAssembly
-    a.translate(instanceList=('column-1', ), vector=(0.0, 0.0, soil_depth - column_depth))
+    a.translate(instanceList=('soil-1',), vector=(0.0, 0.0, -soil_depth))
+    a.translate(instanceList=('column-1', ), vector=(0.0, 0.0, -column_depth))
 
 '''
 def merge_parts():

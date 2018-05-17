@@ -20,7 +20,7 @@ class Mode(object):
 
     def u(o, t, u0, v0):
 
-        u = exp(-o.zeta * o.omega_n * t) * (
+        return exp(-o.zeta * o.omega_n * t) * (
                     u0 * cos(o.omega_d * t) + (v0 + o.zeta * o.omega_n * u0) / o.omega_d * sin(o.omega_d * t))
 
 
@@ -28,7 +28,7 @@ class Mode(object):
 
 ''' ------------------- SDOF Mode  ------------------- '''
 
-class Sdof(object):
+class Sdof(Mode, object):
 
     def __init__(o, H, zeta_mat, c_mode, h_mode, r_mode, m):
         # the first element in omega_ns is the one used specifically to calculate the damping ratio contribution of material
@@ -58,6 +58,7 @@ class Sdof(object):
         o.SDR = o.zeta
         o.PLR = c_mode.omega_n / o.omega_n
         o.SSI_index = c_mode.k / o.k
+
 
     @staticmethod
     def prod(iterable):

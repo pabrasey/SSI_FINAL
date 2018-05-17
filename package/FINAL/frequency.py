@@ -12,7 +12,7 @@ def get_xy(file):
         x,y = line.split(',')
         xs += (float(x),)
         ys += (float(y),)
-    return (xs[1:], ys[1:]) # excpet the first value that is from ini_disp step
+    return (xs[0:], ys[0:]) # excpet the first value that is from ini_disp step
 
 
 def plot_spectrum(y, timestep):
@@ -61,11 +61,11 @@ def plot_results(file):
     y_f = interp1d(x,y)
 
     timestep = 0.001
-    x_ = arange(0, max(x), timestep)
+    x_ = arange(min(x), max(x), timestep)
     y_ = y_f(x_)
 
-    x_ = append(x_, arange(1, 2, timestep))
-    y_ = append(y_, [0 for a in arange(0, 1, 0.001)])
+    x_ = append(x_, arange(max(x), max(x)+1, timestep))
+    y_ = append(y_, [0 for a in arange(max(x), max(x)+1, 0.001)])
     #y_ = append(y_, y_)
 
     subplot(2, 1, 1)

@@ -19,13 +19,13 @@ if one_analysis:
     # Materials
     steel = Material(name='steel', rho=7750, E=210.0e9, nu=0.30, zeta=0.0)
     soil = Soil(name='soil', rho=2000, E=87.5e6, nu=0.25, zeta=0.0,
-                phi=0)  # Soil is a subclass of Material with special properties
+                phi=0.0)  # Soil is a subclass of Material with special properties
 
     # Section
     tube = HollowRoundSection(d_e=4.0, t=0.05)
 
     # Parts
-    super_str = Column(material=steel, section=tube, height=50)  # on soil
+    super_str = Column(material=steel, section=tube, height=100)  # on soil
     pile = Column(material=steel, section=tube, height=30)  # in soil
 
     '''------------------ Create & Run Analysis ------------------'''

@@ -31,6 +31,6 @@ def create(mat):
     if hasattr(mat, 'phi') and mat.phi > 0:
         mdb.models['3D_MODEL'].materials[mat.name].MohrCoulombPlasticity(table=((mat.phi, 0.0), ))
         mdb.models['3D_MODEL'].materials[mat.name].mohrCoulombPlasticity.MohrCoulombHardening(
-            table=((1, 0.1), (0.0, 0.0001)))
+            table=((0.1, 0.00001), (0.0, 0.00002)))
         mdb.models['3D_MODEL'].materials[mat.name].mohrCoulombPlasticity.TensionCutOff(
             temperatureDependency=OFF, dependencies=0, table=((0.0, 0.0), ))

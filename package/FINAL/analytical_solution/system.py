@@ -21,10 +21,13 @@ class AnalyticalSystem:
 
 		o.sdof = Sdof(H=(2.0/3.0*column.h), zeta_mat=0.0, c_mode=o.c_mode, h_mode=o.h_mode, r_mode=o.r_mode, m=(column.m + 2*foundation.m))
 
-
 		# Initial conditions
-		u0 = 0.30 # m
+		u0 = column.h / 300 # m
 		v0 = 0.0 # m / s
+
+		#x_ = arange(0, 1, 0.01)
+		#y_ = [ o.sdof.u(x, u0, v0) for x in x_ ]
+
 
 		print '\n SDOF'
 		pprint(vars(o.sdof))
