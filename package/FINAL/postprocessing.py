@@ -5,26 +5,29 @@ from prettytable import PrettyTable
 import pyglet
 import frequency
 
-results_dir = 'results/objects/'
-
-filenames = sorted([os.path.basename(x) for x in glob.glob(results_dir + '2018_5_17*')])
 
 def show_table(filenames):
 
-    t = PrettyTable(['name', 'super_str.h', 'section r_e', 't', 'Gazetas f_n', 'contact', 'phi'])
+    t = PrettyTable(['name', 'super_str.h', 'section r_e', 't', 'Gazetas f_n', 'Abaqus f_n', 'contact', 'phi'])
 
     for filename in filenames:
-        with open(results_dir + filename, 'r') as f:
+        with open(model_dir + filename, 'r') as f: # model
             objects = json.load(f)
             l = len(objects)
             [steel, soil, tube, super_str, pile, sdof] = objects[:6]
-            if l > 5:
+
+            if l > 5: # abaqus results
+                with open(abaqus_dir + filename + '.txt', 'r') as fa:
+                    data = json.load(fa)
+
+                f_n = data['freq'][0][1]
+                top_disp_1 = data['top_disp_1']
                 num_system = objects[l - 1]
                 t.add_row(
-                    [filename, super_str['h'], tube['r_e'], tube['t'], sdof['f_n'], num_system['contact_col_soil'], soil['phi']])
+                    [filename, super_str['h'], tube['r_e'], tube['t'], sdof['f_n'], f_n, num_system['contact_col_soil'], soil['phi']])
             else:
                 t.add_row(
-                    [filename, super_str['h'], tube['r_e'], tube['t'], sdof['f_n'], 'NaN', soil['phi']])
+                    [filename, super_str['h'], tube['r_e'], tube['t'], sdof['f_n'], 'NaN' 'NaN', soil['phi']])
     print t
 
 
@@ -65,6 +68,10 @@ def show_gif(filename):
 
     pyglet.app.run()
 
+model_dir = 'results/models/'
+abaqus_dir = 'results/abaqus/'
+
+filenames = sorted([os.path.basename(x) for x in glob.glob(model_dir + '2018_5_19*')])
 
 show_table(filenames)
 

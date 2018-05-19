@@ -35,14 +35,14 @@ class Analysis:
         from abaqus_py.system import NumericalSystem
         self.numerical_system = NumericalSystem(steel=self.steel, soil=self.soil, super_str=self.super_str,
                                                 foundation=self.pile,
-                                                results_dir=self.results_dir, analysisname=self.analysisname)
+                                                results_dir=self.results_dir + 'abaqus/', analysisname=self.analysisname)
         self.numerical_system.run_analysis()
-        #self.numerical_system.output()
+        self.numerical_system.output()
 
 
     def save_object(self):
         # saves the Analysis object in file
-        filename = self.results_dir + 'objects/' + self.analysisname
+        filename = self.results_dir + 'models/' + self.analysisname
 
         with open(filename, 'wb') as f:  # Overwrites any existing file.
 

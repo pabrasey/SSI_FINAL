@@ -38,8 +38,8 @@ class NumericalSystem:
         self.contact_mesh_size = 2
 
         # frequency analysis
-        self.numEigen = 5  # number of eigenvalue to search for
-        self.minEigen = 0.0  # minimal frequency of interest
+        self.numEigen = 2  # number of eigenvalue to search for
+        self.minEigen = 0  # minimal frequency of interest
         self.maxEigen = 50.0  # max
 
         # modal dynamics
@@ -136,7 +136,7 @@ class NumericalSystem:
         data = {}
         data.update(output.plot_top_disp(odb))
         data.update(output.freq(odb))
-        filename = self.results_dir + self.jobname + ".txt"
+        filename = self.results_dir + self.analysisname + ".txt"
         with open(filename, 'wb') as f:
             json.dump(data, f, indent=4)
 
