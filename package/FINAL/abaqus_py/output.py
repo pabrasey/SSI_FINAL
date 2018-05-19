@@ -29,14 +29,18 @@ def load_odb(jobname):
     return odb
 
 
-def plot_top_disp(results_dir, jobname, odb):
+def plot_top_disp(odb):
 
-    data = session.xyDataListFromField(odb=odb, steps=('ini_disp', 'modal_dynamics', ), outputPosition=NODAL, variable=(('U', NODAL, ((INVARIANT, 'Magnitude'), (COMPONENT, 'U1'), (COMPONENT, 'U2'), )), ), nodePick=(('COLUMN-1', 1, ('[#10 ]', )), ), )
+    data = session.xyDataListFromField(odb=odb, steps=('ini_disp', 'modal_dynamics', ), outputPosition=NODAL,
+                                       variable=(('U', NODAL, ((INVARIANT, 'Magnitude'), (COMPONENT, 'U1'), (COMPONENT, 'U2'), )), ),
+                                       nodePick=(('COLUMN-1', 1, ('[#10 ]', )), ), )
+    x_ = ()
+    y_ = ()
+    for d in data[1]:
+        x_ += (d[0],)
+        y_ += (d[1],)
 
-    filepath= results_dir + jobname + ".txt"
-    with open(filepath, "w") as f:
-        for d in data[1]:
-            f.write(str(d[0]) + ',' + str(d[1]) + '\n')
+    return {'top_disp_1': (x_, y_)}
 
 
 def visual(results_dir, analysisname):
@@ -53,3 +57,10 @@ def visual(results_dir, analysisname):
     session.writeImageAnimation(
         fileName=filename,
         format=QUICKTIME, canvasObjects=(session.viewports['Viewport: 1'], ))
+
+def freq(odb):
+
+    step = odb.steps['frequency']
+    region = step.historyRegions['Assembly ASSEMBLY']
+    return {'freq' : region.historyOutputs['EIGFREQ'].data}
+

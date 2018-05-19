@@ -33,11 +33,11 @@ class Analysis:
 
     def run_numerical(self):
         from abaqus_py.system import NumericalSystem
-        self.numerical_system = NumericalSystem(materials=(self.steel, self.soil), super_str=self.super_str,
+        self.numerical_system = NumericalSystem(steel=self.steel, soil=self.soil, super_str=self.super_str,
                                                 foundation=self.pile,
                                                 results_dir=self.results_dir, analysisname=self.analysisname)
         self.numerical_system.run_analysis()
-        self.numerical_system.output()
+        #self.numerical_system.output()
 
 
     def save_object(self):

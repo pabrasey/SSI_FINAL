@@ -1,8 +1,7 @@
 import json
-from pprint import pprint
 import os, glob
 from moviepy.editor import VideoFileClip
-from PIL import Image
+from prettytable import PrettyTable
 import pyglet
 import frequency
 
@@ -10,31 +9,40 @@ results_dir = 'results/objects/'
 
 filenames = sorted([os.path.basename(x) for x in glob.glob(results_dir + '2018_5_17*')])
 
-def show_result(filename):
+def show_table(filenames):
+
+    t = PrettyTable(['name', 'super_str.h', 'section r_e', 't', 'Gazetas f_n', 'contact', 'phi'])
+
+    for filename in filenames:
+        with open(results_dir + filename, 'r') as f:
+            objects = json.load(f)
+            l = len(objects)
+            [steel, soil, tube, super_str, pile, sdof] = objects[:6]
+            if l > 5:
+                num_system = objects[l - 1]
+                t.add_row(
+                    [filename, super_str['h'], tube['r_e'], tube['t'], sdof['f_n'], num_system['contact_col_soil'], soil['phi']])
+            else:
+                t.add_row(
+                    [filename, super_str['h'], tube['r_e'], tube['t'], sdof['f_n'], 'NaN', soil['phi']])
+    print t
+
+
+def show_graphics(filename):
 
     print filename
-    with open(results_dir + filename, 'r') as f:
+    abaqusname = 'results/' + filename
+    if os.path.isfile(abaqusname + '.txt'):
+        frequency.plot_results(abaqusname + '.txt')
+        pass
 
-        objects = json.load(f)
-        l = len(objects)
-        [steel, soil, tube, super_str, pile, sdof] = objects[:6]
-        if l > 5:
-            num_system = objects[l - 1]
-            print num_system['contact_col_soil']
-
-        print('super structure height :' + str(super_str['h']))
-        print('Gazetas frequency : ' + str(sdof['f_n']))
-
-    abaqus = 'results/' + filename
-    if os.path.isfile(abaqus + '.txt'):
-        frequency.plot_results(abaqus + '.txt')
-
-    if os.path.isfile(abaqus + '.mov') or os.path.isfile(abaqus + '.gif'):
-        if not os.path.isfile(abaqus + '.gif'):
-            #create gif if not exists
-            VideoFileClip('results/' + filename + '.mov').write_gif(abaqus + '.gif')
+    if os.path.isfile(abaqusname + '.mov') or os.path.isfile(abaqusname + '.gif'):
+        if not os.path.isfile(abaqusname + '.gif'):
+            #create gif if doesn't exists
+            VideoFileClip('results/' + filename + '.mov').write_gif(abaqusname + '.gif')
             os.remove('results/' + filename + '.mov')
-        show_gif(abaqus + '.gif')
+        show_gif(abaqusname + '.gif')
+
     print ''
 
 
@@ -57,5 +65,9 @@ def show_gif(filename):
 
     pyglet.app.run()
 
+
+show_table(filenames)
+
 for filename in filenames:
-    show_result(filename)
+    #show_graphics(filename)
+    pass

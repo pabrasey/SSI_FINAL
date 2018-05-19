@@ -23,7 +23,7 @@ import connectorBehavior
 
 def static():
     # geostatic
-    mdb.models['3D_MODEL'].GeostaticStep(name='geostatic', previous='Initial')
+    mdb.models['3D_MODEL'].GeostaticStep(name='geostatic', previous='Initial', timeIncrementationMethod=FIXED )
 
     # static
     mdb.models['3D_MODEL'].StaticStep(name='static', previous='geostatic')
@@ -42,7 +42,7 @@ def create_ini_disp():
 def create_modal_dynamics(timePeriod, incSize):
     mdb.models['3D_MODEL'].ModalDynamicsStep(name='modal_dynamics',
         previous='ini_disp', timePeriod=timePeriod, incSize=incSize)
-    # field output every 1 increament
+    # field output every 1 increment
     mdb.models['3D_MODEL'].fieldOutputRequests['F-Output-3'].setValues(frequency=1)
     mdb.models['3D_MODEL'].fieldOutputRequests['F-Output-4'].setValues(frequency=1)
 

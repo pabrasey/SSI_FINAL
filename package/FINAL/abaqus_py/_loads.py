@@ -21,14 +21,14 @@ import displayGroupOdbToolset as dgo
 import connectorBehavior
 
 
-def soil_initial_conditions(zero_h):
+def soil_initial_conditions(depth, rho_soil):
     # initial conditions
     a = mdb.models['3D_MODEL'].rootAssembly
     c1 = a.instances['soil-1'].cells
     cells1 = c1.getSequenceFromMask(mask=('[#7f ]',), )
     region = regionToolset.Region(cells=cells1)
     mdb.models['3D_MODEL'].GeostaticStress(name='geostatic_field', region=region,
-                                           stressMag1=0, vCoord1=0, stressMag2= - 400.0e3, vCoord2= - 20,
+                                           stressMag1=0, vCoord1=0, stressMag2= - depth * rho_soil * 9.81, vCoord2= - depth,
                                            lateralCoeff1=0.5, lateralCoeff2=None)
 
 def fix_base_bc():

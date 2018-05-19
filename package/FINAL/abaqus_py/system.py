@@ -14,10 +14,12 @@ import _loads
 import _jobs
 import output
 
+import json
+
 
 class NumericalSystem:
 
-    def __init__(self, materials, super_str, foundation, results_dir, analysisname):
+    def __init__(self, steel, soil, super_str, foundation, results_dir, analysisname):
 
         ''' ---------- Variables ---------- '''
 
@@ -36,9 +38,9 @@ class NumericalSystem:
         self.contact_mesh_size = 2
 
         # frequency analysis
-        self.numEigen = 2  # number of eigenvalue to search for
-        self.minEigen = 1  # minimal frequency of interest
-        self.maxEigen = 50  # max
+        self.numEigen = 5  # number of eigenvalue to search for
+        self.minEigen = 0.0  # minimal frequency of interest
+        self.maxEigen = 50.0  # max
 
         # modal dynamics
         self.direct_damping_ratio = 0.0
@@ -53,8 +55,8 @@ class NumericalSystem:
         mdb.Model(name='3D_MODEL')
 
         # create materials
-        for mat in materials:
-            _materials.create(mat)
+        _materials.create(steel)
+        _materials.create_soil(soil)
 
         # create parts
         # soil
@@ -101,7 +103,7 @@ class NumericalSystem:
 
 
         # ic, bc, constraints and loads.py
-        _loads.soil_initial_conditions(zero_h=self.soil_depth)
+        _loads.soil_initial_conditions(depth=self.soil_depth, rho_soil=soil.rho)
         _loads.fix_base_bc()
         if self.fixed_sides:
             _loads.fix_sides_bc()
@@ -130,8 +132,16 @@ class NumericalSystem:
         job = mdb.jobs[self.jobname]
         job.waitForCompletion()
         odb = output.load_odb(self.jobname)
-        output.plot_top_disp(self.results_dir, self.analysisname, odb)
+
+        data = {}
+        data.update(output.plot_top_disp(odb))
+        data.update(output.freq(odb))
+        filename = self.results_dir + self.jobname + ".txt"
+        with open(filename, 'wb') as f:
+            json.dump(data, f, indent=4)
+
         output.visual(self.results_dir, self.analysisname)
+
         #odb.close(odb, write=TRUE)
 
 
