@@ -58,6 +58,7 @@ def visual(results_dir, analysisname):
         fileName=filename,
         format=QUICKTIME, canvasObjects=(session.viewports['Viewport: 1'], ))
 
+
 def freq(odb):
 
     step = odb.steps['frequency']
