@@ -26,7 +26,7 @@ class NumericalSystem:
         # soil
         self.pile_soil_space = 20
         self.soil_depth = foundation.h + self.pile_soil_space
-        self.soil_diameter = 3.0 * super_str.h
+        self.soil_diameter = 300 #3.0 * super_str.h
         self.infinites_width = 4
         self.infinites_bottom = False
         self.fixed_sides = False
@@ -35,7 +35,7 @@ class NumericalSystem:
         # mesh
         self.col_mesh_size = 3
         self.soil_mesh_size = 3
-        self.contact_mesh_size = 2
+        self.contact_mesh_size = 2 # not used at the moment !
 
         # frequency analysis
         self.numEigen = 2  # number of eigenvalue to search for

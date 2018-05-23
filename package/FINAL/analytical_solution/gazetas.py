@@ -11,6 +11,7 @@ class FoundationMode(object):
         o.s = soil
         o.m = o.f.m
         o.a0 = a0
+        o.active_l = 2 * o.f.sec.d * (o.f.mat.E / o.s.E)**0.20
 
 
 class HorizontalPile(FoundationMode, object):

@@ -30,7 +30,7 @@ class Mode(object):
 
 class Sdof(Mode, object):
 
-    def __init__(o, H, zeta_mat, c_mode, h_mode, r_mode, m):
+    def __init__(o, H, zeta_mat, c_mode, h_mode, r_mode, m, pile_active_l):
         # the first element in omega_ns is the one used specifically to calculate the damping ratio contribution of material
 
         o.H = H
@@ -59,6 +59,7 @@ class Sdof(Mode, object):
         o.PLR = c_mode.omega_n / o.omega_n
         o.SSI_index = c_mode.k / o.k
 
+        o.pile_active_l = pile_active_l
 
     @staticmethod
     def prod(iterable):

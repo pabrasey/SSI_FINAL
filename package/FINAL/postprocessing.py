@@ -2,50 +2,66 @@ import json
 import os, glob
 from moviepy.editor import VideoFileClip
 from prettytable import PrettyTable
+import decimal
 import pyglet
 import frequency
 
 
 def show_table(filenames):
 
-    t = PrettyTable(['name', 'super_str.h', 'section r_e', 't', 'Gazetas f_n', 'Abaqus f_n', 'contact', 'phi', 'soil depth'])
+    t = PrettyTable(['name', 's_str_h', 'pile depth', 'pile_act_l', 'r_e', 't', 'Gaz. f_n',
+                     'Abq f_n', 'contact', 'phi', 'soil depth', 'soil width',
+                     'soil_mesh', 'fix_sides'])
 
     for filename in filenames:
-        print filename
         with open(model_dir + filename, 'r') as f: # model
-            objects = json.load(f)
+            objects = json.load(f, parse_float=lambda s: decimal.Decimal(str(round(float(s), 4))))
             l = len(objects)
             [steel, soil, tube, super_str, pile, sdof] = objects[:6]
+            if not 'pile_active_l' in sdof: sdof['pile_active_l'] = 'NaN'
 
-            if l > 5: # abaqus results
-                with open(abaqus_dir + filename + '.txt', 'r') as fa:
-                    data = json.load(fa)
+
+            data = get_abq_data(filename)
+            if len(data) > 0: # abaqus results
 
                 f_n = data['freq'][0][1]
                 top_disp_1 = data['top_disp_1']
-                num_system = objects[l - 1]
-                t.add_row(
-                    [filename, super_str['h'], tube['r_e'], tube['t'], sdof['f_n'], f_n, num_system['contact_col_soil'], soil['phi'], num_system['soil_depth']])
+                n_sys = objects[l - 1]
+                t.add_row([
+                    filename, super_str['h'], pile['h'], sdof['pile_active_l'], tube['r_e'], tube['t'], sdof['f_n'],
+                     f_n, n_sys['contact_col_soil'], soil['phi'], n_sys['soil_depth'], n_sys['soil_diameter'],
+                    n_sys['soil_mesh_size'], n_sys['fixed_sides']
+                ])
             else:
                 t.add_row(
-                    [filename, super_str['h'], tube['r_e'], tube['t'], sdof['f_n'], 'NaN' 'NaN', soil['phi'], 'NaN'])
+                    [filename, super_str['h'], pile['h'], sdof['pile_active_l'], tube['r_e'], tube['t'], sdof['f_n'],
+                     'NaN', 'NaN', soil['phi'], 'NaN', 'NaN', 'NaN', 'NaN'])
     print t
+
+
+def get_abq_data(filename):
+    data = {}
+    abq_basename = abaqus_dir + filename
+    if os.path.isfile(abq_basename + '.txt'):
+        with open(abaqus_dir + filename + '.txt', 'r') as fa:
+            data = json.load(fa, parse_float=lambda s: decimal.Decimal(str(round(float(s), 4))))
+    return data
 
 
 def show_graphics(filename):
 
     print filename
-    abaqusname = 'results/' + filename
-    if os.path.isfile(abaqusname + '.txt'):
-        frequency.plot_results(abaqusname + '.txt')
-        pass
+    top_disp_1 = get_abq_data(filename)['top_disp_1']
+    frequency.plot_results(top_disp_1[0], top_disp_1[1])
 
-    if os.path.isfile(abaqusname + '.mov') or os.path.isfile(abaqusname + '.gif'):
-        if not os.path.isfile(abaqusname + '.gif'):
+    abq_basename = abaqus_dir + filename
+
+    if os.path.isfile(abq_basename + '.mov') or os.path.isfile(abq_basename + '.gif'):
+        if not os.path.isfile(abq_basename + '.gif'):
             #create gif if doesn't exists
-            VideoFileClip('results/' + filename + '.mov').write_gif(abaqusname + '.gif')
-            os.remove('results/' + filename + '.mov')
-        show_gif(abaqusname + '.gif')
+            VideoFileClip(abq_basename + '.mov').write_gif(abq_basename + '.gif')
+            os.remove(abq_basename + '.mov')
+        #show_gif(abq_basename + '.gif')
 
     print ''
 

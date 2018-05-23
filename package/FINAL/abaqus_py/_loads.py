@@ -45,10 +45,10 @@ def fix_base_bc():
 def fix_sides_bc():
     a = mdb.models['3D_MODEL'].rootAssembly
     f1 = a.instances['soil-1'].faces
-    faces1 = f1.getSequenceFromMask(mask=('[#10100880 ]', ), )
-    region = a.Set(faces=faces1, name='soil_side_surfs')
+    faces1 = f1.getSequenceFromMask(mask=('[#20201100 ]', ), )
+    region = a.Set(faces=faces1, name='soil_sides')
     mdb.models['3D_MODEL'].DisplacementBC(name='fixed_sides',
-        createStepName='Initial', region=region, u1=SET, u2=SET, u3=UNSET,
+        createStepName='Initial', region=region, u1=SET, u2=SET, u3=SET,
         ur1=UNSET, ur2=UNSET, ur3=UNSET, amplitude=UNSET,
         distributionType=UNIFORM, fieldName='', localCsys=None)
 

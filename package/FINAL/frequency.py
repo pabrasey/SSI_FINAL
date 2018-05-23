@@ -4,16 +4,6 @@ from scipy import arange
 from scipy.fftpack import fft, fftfreq
 from scipy.interpolate import interp1d
 
-def get_xy(file):
-    lines = [line.rstrip('\n') for line in open(file)]
-    xs = ()
-    ys = ()
-    for line in lines:
-        x,y = line.split(',')
-        xs += (float(x),)
-        ys += (float(y),)
-    return (xs[0:], ys[0:]) # excpet the first value that is from ini_disp step
-
 
 def plot_spectrum(y, timestep):
     frq = fftfreq(len(y), timestep)
@@ -54,10 +44,7 @@ def test():
     plot_spectrum(y, 1/Fs)
     show()
 
-def plot_results(file):
-    xy = get_xy(file)
-    x = xy[0]
-    y = xy[1]
+def plot_results(x, y):
     y_f = interp1d(x,y)
 
     timestep = 0.001
