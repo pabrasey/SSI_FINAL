@@ -8,9 +8,10 @@ import frequency
 
 def show_table(filenames):
 
-    t = PrettyTable(['name', 'super_str.h', 'section r_e', 't', 'Gazetas f_n', 'Abaqus f_n', 'contact', 'phi'])
+    t = PrettyTable(['name', 'super_str.h', 'section r_e', 't', 'Gazetas f_n', 'Abaqus f_n', 'contact', 'phi', 'soil depth'])
 
     for filename in filenames:
+        print filename
         with open(model_dir + filename, 'r') as f: # model
             objects = json.load(f)
             l = len(objects)
@@ -24,10 +25,10 @@ def show_table(filenames):
                 top_disp_1 = data['top_disp_1']
                 num_system = objects[l - 1]
                 t.add_row(
-                    [filename, super_str['h'], tube['r_e'], tube['t'], sdof['f_n'], f_n, num_system['contact_col_soil'], soil['phi']])
+                    [filename, super_str['h'], tube['r_e'], tube['t'], sdof['f_n'], f_n, num_system['contact_col_soil'], soil['phi'], num_system['soil_depth']])
             else:
                 t.add_row(
-                    [filename, super_str['h'], tube['r_e'], tube['t'], sdof['f_n'], 'NaN' 'NaN', soil['phi']])
+                    [filename, super_str['h'], tube['r_e'], tube['t'], sdof['f_n'], 'NaN' 'NaN', soil['phi'], 'NaN'])
     print t
 
 
@@ -71,7 +72,7 @@ def show_gif(filename):
 model_dir = 'results/models/'
 abaqus_dir = 'results/abaqus/'
 
-filenames = sorted([os.path.basename(x) for x in glob.glob(model_dir + '2018_5_19*')])
+filenames = sorted([os.path.basename(x) for x in glob.glob(model_dir + '2018_5_*')])
 
 show_table(filenames)
 

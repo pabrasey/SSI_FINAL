@@ -24,7 +24,7 @@ class NumericalSystem:
         ''' ---------- Variables ---------- '''
 
         # soil
-        self.pile_soil_space = 5
+        self.pile_soil_space = 20
         self.soil_depth = foundation.h + self.pile_soil_space
         self.soil_diameter = 3.0 * super_str.h
         self.infinites_width = 4
