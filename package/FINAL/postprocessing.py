@@ -1,5 +1,6 @@
 import json
 import os, glob
+from collections import OrderedDict
 from moviepy.editor import VideoFileClip
 from prettytable import PrettyTable
 import decimal
@@ -7,36 +8,64 @@ import pyglet
 import frequency
 
 
-def show_table(filenames):
+def show_table(data):
 
-    t = PrettyTable(['name', 's_str_h', 'pile depth', 'pile_act_l', 'r_e', 't', 'Gaz. f_n',
-                     'Abq f_n', 'contact', 'phi', 'soil depth', 'soil width',
-                     'soil_mesh', 'fix_sides'])
+    t = PrettyTable(data[0].keys())
+    for row in data:
+        t.add_row(row.values())
+    print t
 
+
+def get_data(filenames):
+    data = []
     for filename in filenames:
-        with open(model_dir + filename, 'r') as f: # model
+        # model data
+        with open(model_dir + filename + '.txt', 'r') as f:  # model
             objects = json.load(f, parse_float=lambda s: decimal.Decimal(str(round(float(s), 4))))
             l = len(objects)
             [steel, soil, tube, super_str, pile, sdof] = objects[:6]
             if not 'pile_active_l' in sdof: sdof['pile_active_l'] = 'NaN'
+        dic = OrderedDict([
+            ('name'      ,   filename),
+            ('s_str_h'   ,   super_str['h']),
+            ('pile depth',   pile['h']),
+            ('pile_act_l',   sdof['pile_active_l']),
+            ('r_e'       ,   tube['r_e']),
+            ('t'         ,   tube['t']),
+            ('Gaz. f_n'  ,   sdof['f_n']),
+        ])
 
+        # abaqus results
 
-            data = get_abq_data(filename)
-            if len(data) > 0: # abaqus results
+        abq_res = get_abq_data(filename)
+        if len(data) > 0:
+            f_n = abq_res['freq'][0][1]
+            top_disp_1 = abq_res['top_disp_1']
+            n_sys = objects[l - 1]
 
-                f_n = data['freq'][0][1]
-                top_disp_1 = data['top_disp_1']
-                n_sys = objects[l - 1]
-                t.add_row([
-                    filename, super_str['h'], pile['h'], sdof['pile_active_l'], tube['r_e'], tube['t'], sdof['f_n'],
-                     f_n, n_sys['contact_col_soil'], soil['phi'], n_sys['soil_depth'], n_sys['soil_diameter'],
-                    n_sys['soil_mesh_size'], n_sys['fixed_sides']
-                ])
-            else:
-                t.add_row(
-                    [filename, super_str['h'], pile['h'], sdof['pile_active_l'], tube['r_e'], tube['t'], sdof['f_n'],
-                     'NaN', 'NaN', soil['phi'], 'NaN', 'NaN', 'NaN', 'NaN'])
-    print t
+            dic.update([
+                ('Abq f_n'   ,   f_n),
+                ('contact'   ,   n_sys['contact_col_soil']),
+                ('phi'       ,   soil['phi']),
+                ('soil depth',   n_sys['soil_depth']),
+                ('soil width',   n_sys['soil_diameter']),
+                ('soil_mesh' ,   n_sys['soil_mesh_size']),
+                ('fix_sides' ,   n_sys['fixed_sides'])
+            ])
+        else:
+            dic.update([
+                ('Abq f_n',      'NaN'),
+                ('contact',      'NaN'),
+                ('phi',          'NaN'),
+                ('soil depth',   'NaN'),
+                ('soil width',   'NaN'),
+                ('soil_mesh',    'NaN'),
+                ('fix_sides',    'NaN'),
+            ])
+
+        data.append(dic) # add to list of data
+
+    return data
 
 
 def get_abq_data(filename):
@@ -88,9 +117,10 @@ def show_gif(filename):
 model_dir = 'results/models/'
 abaqus_dir = 'results/abaqus/'
 
-filenames = sorted([os.path.basename(x) for x in glob.glob(model_dir + '2018_5_*')])
+filenames = sorted([os.path.basename(os.path.splitext(x)[0]) for x in glob.glob(model_dir + '2018_5_*')])
 
-show_table(filenames)
+data = get_data(filenames)
+show_table(data)
 
 for filename in filenames:
     #show_graphics(filename)

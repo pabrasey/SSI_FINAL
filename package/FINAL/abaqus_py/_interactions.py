@@ -66,6 +66,11 @@ def soil_col_contact():
     mdb.models['3D_MODEL'].interactionProperties['IntProp-1'].NormalBehavior(
         pressureOverclosure=HARD, allowSeparation=ON,
         constraintEnforcementMethod=DEFAULT)
+    mdb.models['3D_MODEL'].interactionProperties['IntProp-1'].TangentialBehavior(
+        formulation=PENALTY, directionality=ISOTROPIC, slipRateDependency=OFF,
+        pressureDependency=OFF, temperatureDependency=OFF, dependencies=0,
+        table=((0.5, ), ), shearStressLimit=None, maximumElasticSlip=FRACTION,
+        fraction=0.005, elasticSlipStiffness=None)
 
     # create surface to surface contacts
 

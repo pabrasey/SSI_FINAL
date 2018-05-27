@@ -42,7 +42,7 @@ class Analysis:
 
     def save_object(self):
         # saves the Analysis object in file
-        filename = self.results_dir + 'models/' + self.analysisname
+        filename = self.results_dir + 'models/' + self.analysisname + '.txt'
 
         with open(filename, 'wb') as f:  # Overwrites any existing file.
 

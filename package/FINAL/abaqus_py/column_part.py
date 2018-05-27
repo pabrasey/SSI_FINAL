@@ -20,7 +20,7 @@ import xyPlot
 import displayGroupOdbToolset as dgo
 import connectorBehavior
 
-def create_part(super_str, foundation):
+def create_part(super_str, foundation, mass):
 
     s = mdb.models['3D_MODEL'].ConstrainedSketch(name='__profile__',
                                                 sheetSize=200.0)
@@ -40,6 +40,9 @@ def create_part(super_str, foundation):
     p.BaseSolidExtrude(sketch=s, depth= super_str.h + foundation.h)
     s.unsetPrimaryObject()
     del mdb.models['3D_MODEL'].sketches['__profile__']
+
+    # mass at the top
+
 
 
 def partition(foundation):

@@ -26,15 +26,15 @@ class NumericalSystem:
         # soil
         self.pile_soil_space = 20
         self.soil_depth = foundation.h + self.pile_soil_space
-        self.soil_diameter = 300 #3.0 * super_str.h
+        self.soil_diameter = 400 #3.0 * super_str.h
         self.infinites_width = 4
         self.infinites_bottom = False
         self.fixed_sides = False
-        self.contact_col_soil = True # False -> tie constraints, True -> contact
+        self.contact_col_soil = False # False -> tie constraints, True -> contact
 
         # mesh
-        self.col_mesh_size = 3
-        self.soil_mesh_size = 3
+        self.col_mesh_size = 4
+        self.soil_mesh_size = 4
         self.contact_mesh_size = 2 # not used at the moment !
 
         # frequency analysis
@@ -67,7 +67,7 @@ class NumericalSystem:
         soil_part.partition_bottom(space=self.pile_soil_space)
 
         # column
-        column_part.create_part(super_str, foundation)
+        column_part.create_part(super_str, foundation, 350.0e3)
         column_part.partition(foundation)
 
 
