@@ -1,10 +1,13 @@
 import json
 import os, glob
 from collections import OrderedDict
+from itertools import groupby
+import copy
 from moviepy.editor import VideoFileClip
 from prettytable import PrettyTable
 import decimal
 import pyglet
+from pylab import plot, show, title, xlabel, ylabel
 import frequency
 
 
@@ -47,8 +50,8 @@ def get_data(filenames):
                 ('Abq f_n'   ,   f_n),
                 ('contact'   ,   n_sys['contact_col_soil']),
                 ('phi'       ,   soil['phi']),
-                ('soil depth',   n_sys['soil_depth']),
-                ('soil width',   n_sys['soil_diameter']),
+                ('soil_depth',   n_sys['soil_depth']),
+                ('soil_width',   n_sys['soil_diameter']),
                 ('soil_mesh' ,   n_sys['soil_mesh_size']),
                 ('fix_sides' ,   n_sys['fixed_sides'])
             ])
@@ -57,8 +60,8 @@ def get_data(filenames):
                 ('Abq f_n',      'NaN'),
                 ('contact',      'NaN'),
                 ('phi',          'NaN'),
-                ('soil depth',   'NaN'),
-                ('soil width',   'NaN'),
+                ('soil_depth',   'NaN'),
+                ('soil_width',   'NaN'),
                 ('soil_mesh',    'NaN'),
                 ('fix_sides',    'NaN'),
             ])
@@ -111,16 +114,67 @@ def show_gif(filename):
     def on_draw():
         win.clear()
         sprite.draw()
-
     pyglet.app.run()
+
+
+def param_analysis(data, x, y, discarded, needed):
+    full_data = copy.deepcopy(data)
+    data = copy.deepcopy(data)
+
+    # remove the x, y and discarded keys in data
+    for d in data:
+        del d[x], d[y], d['name']
+        for disc in discarded:
+            del d[disc]
+
+    # get the duplicates
+    dupe_ind = [n for n, e in enumerate(data) if e in data[:n]]
+
+    # create list of dupes containing the whole data
+    # and remove entries that do not have the needed arguments
+    full_dupes = []
+    i = 0
+    for n in dupe_ind:
+        full_dupes.append(full_data[n])
+        for need in needed:
+            if not full_dupes[i][need[0]] == need[1]:
+                del full_dupes[i]
+                i -= 1
+                break
+        i += 1
+
+    # create plot data
+    xy_ = []
+    for d in full_dupes:
+        xy_.append((d[x], d[y]))
+
+    x_ = [ xy_s[0] for xy_s in sorted(xy_) ]
+    y_ = [ xy_s[1] for xy_s in sorted(xy_) ]
+
+    return (x_, y_)
+
+
+
 
 model_dir = 'results/models/'
 abaqus_dir = 'results/abaqus/'
 
 filenames = sorted([os.path.basename(os.path.splitext(x)[0]) for x in glob.glob(model_dir + '2018_5_*')])
+filenames.sort(key=lambda x: os.path.getmtime(model_dir + x + '.txt'))
 
 data = get_data(filenames)
-show_table(data)
+#show_table(data)
+xy1 = param_analysis(data, 'soil_width', 'Abq f_n',
+               ['contact', 'soil_mesh', 'pile_act_l'],
+               [('s_str_h', 80), ('soil_depth', 60), ('fix_sides', True), ])
+xy2 = param_analysis(data, 'soil_width', 'Abq f_n',
+               ['contact', 'soil_mesh', 'pile_act_l'],
+               [('s_str_h', 80), ('soil_depth', 60), ('fix_sides', False), ])
+
+# plot
+plot(xy1[0], xy1[1], 'r')
+plot(xy2[0], xy2[1], 'r')
+show()
 
 for filename in filenames:
     #show_graphics(filename)
