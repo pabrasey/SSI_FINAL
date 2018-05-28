@@ -7,7 +7,7 @@ from moviepy.editor import VideoFileClip
 from prettytable import PrettyTable
 import decimal
 import pyglet
-from pylab import plot, show, title, xlabel, ylabel
+from pylab import plot, show, title, xlabel, ylabel, legend
 import frequency
 
 
@@ -16,7 +16,7 @@ def show_table(data):
     t = PrettyTable(data[0].keys())
     for row in data:
         t.add_row(row.values())
-    print t
+    print(t)
 
 
 def get_data(filenames):
@@ -26,12 +26,20 @@ def get_data(filenames):
         with open(model_dir + filename + '.txt', 'r') as f:  # model
             objects = json.load(f, parse_float=lambda s: decimal.Decimal(str(round(float(s), 4))))
             l = len(objects)
-            [steel, soil, tube, super_str, pile, sdof] = objects[:6]
+            if objects[0].has_key('serie_id'):
+                [lysis, steel, soil, tube, super_str, pile, sdof] = objects[:7]
+            else:
+                [steel, soil, tube, super_str, pile, sdof] = objects[:6]
+                lysis = {}
+                lysis['serie_id'] = 'NaN'
+            # keys that have been added later in the code
             if not 'pile_active_l' in sdof: sdof['pile_active_l'] = 'NaN'
+
         dic = OrderedDict([
-            ('name'      ,   filename),
+            ('name'      ,   filename[7:-4]),
+            ('s_id'      ,   lysis['serie_id']),
             ('s_str_h'   ,   super_str['h']),
-            ('pile depth',   pile['h']),
+            ('pile_depth',   pile['h']),
             ('pile_act_l',   sdof['pile_active_l']),
             ('r_e'       ,   tube['r_e']),
             ('t'         ,   tube['t']),
@@ -41,10 +49,18 @@ def get_data(filenames):
         # abaqus results
 
         abq_res = get_abq_data(filename)
-        if len(data) > 0:
-            f_n = abq_res['freq'][0][1]
-            top_disp_1 = abq_res['top_disp_1']
+        if len(abq_res) > 0:
             n_sys = objects[l - 1]
+            f_n = abq_res['freq'][0][1]
+            # soil displacement
+            if abq_res.has_key('soil_u2'):
+                soil_u = [ abq_res['soil_u1'], abq_res['soil_u2'], abq_res['soil_u3'] ]
+                mx = [max( map(abs, u[1]) ) for u in soil_u] # max displacement in each direction
+                dof = mx.index(max( mx )) # direction of max displacement
+                soilU_ratio = "%.3f" % (soil_u[dof][1][-1] / soil_u[dof][1][0])
+            else:
+                dof = -1
+                soilU_ratio = 'NaN'
 
             dic.update([
                 ('Abq f_n'   ,   f_n),
@@ -53,7 +69,9 @@ def get_data(filenames):
                 ('soil_depth',   n_sys['soil_depth']),
                 ('soil_width',   n_sys['soil_diameter']),
                 ('soil_mesh' ,   n_sys['soil_mesh_size']),
-                ('fix_sides' ,   n_sys['fixed_sides'])
+                ('fix_sides' ,   n_sys['fixed_sides']),
+                ('soilU_oi'  ,   soilU_ratio),
+                ('dir'       ,   dof + 1 ),
             ])
         else:
             dic.update([
@@ -64,6 +82,8 @@ def get_data(filenames):
                 ('soil_width',   'NaN'),
                 ('soil_mesh',    'NaN'),
                 ('fix_sides',    'NaN'),
+                ('soilU_oi',    'NaN'),
+                ('dir',          'NaN'),
             ])
 
         data.append(dic) # add to list of data
@@ -80,9 +100,29 @@ def get_abq_data(filename):
     return data
 
 
+def plot_soil_u(analysisname):
+    abq_res = get_abq_data(analysisname)
+    soil_u1 = abq_res['soil_u1']
+    plot_xy(soil_u1[0], soil_u1[1], 'U1', 'x [m] (path)', 'U [m]', False)
+    soil_u2 = abq_res['soil_u2']
+    plot_xy(soil_u2[0], soil_u2[1], 'U2', 'x [m] (path)', 'U [m]', False)
+    soil_u3 = abq_res['soil_u3']
+    plot_xy(soil_u3[0], soil_u3[1], 'U3', 'x [m] (path)', 'U [m]', True)
+
+
+
+def plot_xy(x, y, label, xlab, ylab, show_):
+    plot(x, y, label=label)
+    if show_:
+        legend(framealpha=1, frameon=False);
+        xlabel(xlab)
+        ylabel(ylab)
+        show()
+
+
 def show_graphics(filename):
 
-    print filename
+    print(filename)
     top_disp_1 = get_abq_data(filename)['top_disp_1']
     frequency.plot_results(top_disp_1[0], top_disp_1[1])
 
@@ -95,7 +135,7 @@ def show_graphics(filename):
             os.remove(abq_basename + '.mov')
         #show_gif(abq_basename + '.gif')
 
-    print ''
+    print('')
 
 
 def show_gif(filename):
@@ -154,8 +194,6 @@ def param_analysis(data, x, y, discarded, needed):
     return (x_, y_)
 
 
-
-
 model_dir = 'results/models/'
 abaqus_dir = 'results/abaqus/'
 
@@ -163,18 +201,27 @@ filenames = sorted([os.path.basename(os.path.splitext(x)[0]) for x in glob.glob(
 filenames.sort(key=lambda x: os.path.getmtime(model_dir + x + '.txt'))
 
 data = get_data(filenames)
-#show_table(data)
-xy1 = param_analysis(data, 'soil_width', 'Abq f_n',
-               ['contact', 'soil_mesh', 'pile_act_l'],
-               [('s_str_h', 80), ('soil_depth', 60), ('fix_sides', True), ])
-xy2 = param_analysis(data, 'soil_width', 'Abq f_n',
-               ['contact', 'soil_mesh', 'pile_act_l'],
-               [('s_str_h', 80), ('soil_depth', 60), ('fix_sides', False), ])
+show_table(data)
 
-# plot
-plot(xy1[0], xy1[1], 'r')
-plot(xy2[0], xy2[1], 'r')
-show()
+def soil_width_analysis():
+    xy1 = param_analysis(data, 'soil_width', 'Abq f_n',
+                   ['contact', 'soil_mesh', 'pile_act_l'],
+                   [('s_str_h', 80), ('soil_depth', 60), ('fix_sides', True), ])
+    xy2 = param_analysis(data, 'soil_width', 'Abq f_n',
+                   ['contact', 'soil_mesh', 'pile_act_l'],
+                   [('s_str_h', 80), ('soil_depth', 60), ('fix_sides', False), ])
+
+
+xy3 = param_analysis(data, 'pile_depth', 'soilU_oi',
+               ['contact', 'soil_depth', 'pile_act_l', 'Abq f_n'],
+               [('s_str_h', 80), ('fix_sides', False), ('s_id', '0')])
+
+
+plot_xy(xy3[0], xy3[1], 'Ratio In/Out', 'pile_depth', 'soilU_oi', True)
+
+for i in range(1,3,1):
+    #plot_soil_u(filenames[-i])
+    pass
 
 for filename in filenames:
     #show_graphics(filename)

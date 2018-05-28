@@ -9,7 +9,9 @@ from analytical_solution.system import AnalyticalSystem
 
 class Analysis:
 
-    def __init__(self, model, results_dir):
+    def __init__(self, model, results_dir, serie_id='0'):
+
+        self.serie_id = serie_id
 
         self.steel = model['steel']
         self.soil = model['soil']
@@ -46,11 +48,11 @@ class Analysis:
 
         with open(filename, 'wb') as f:  # Overwrites any existing file.
 
-            objects = [self.steel, self.soil, self.tube, self.super_str, self.pile, self.analytical_system.sdof]
+            objects = [{'serie_id': self.serie_id}, self.steel, self.soil, self.tube, self.super_str, self.pile, self.analytical_system.sdof]
             if hasattr(self, 'numerical_system'):
                 objects += (self.numerical_system,)
 
-            json.dump([obj.__dict__ for obj in objects], f, default=lambda x: x.__dict__, indent=4)
+            json.dump([obj for obj in objects], f, default=lambda x: x.__dict__, indent=4)
 
 
     def print_objects(self):

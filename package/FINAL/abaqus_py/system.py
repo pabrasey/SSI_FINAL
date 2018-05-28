@@ -26,7 +26,7 @@ class NumericalSystem:
         # soil
         self.pile_soil_space = 20
         self.soil_depth = foundation.h + self.pile_soil_space
-        self.soil_diameter = 600 #3.0 * super_str.h
+        self.soil_diameter = 200 #3.0 * super_str.h
         self.infinites_width = 4
         self.infinites_bottom = False
         self.fixed_sides = False
@@ -43,11 +43,15 @@ class NumericalSystem:
         self.maxEigen = 50.0  # max
 
         # modal dynamics
+        self.mod_dyn = False
         self.direct_damping_ratio = 0.0
 
         # software specific
         self.results_dir = results_dir
         self.analysisname = analysisname
+
+        # geometry
+        self.col_r_e = super_str.sec.d_e /2
 
         ''' ---------- Create Abaqus Model ---------- '''
 
@@ -84,8 +88,9 @@ class NumericalSystem:
         _steps.static() # both geostatic and static step
         _steps.create_frequency(self.numEigen, self.minEigen, self.maxEigen)
         _steps.create_ini_disp()
-        _steps.create_modal_dynamics(1, 0.01)
-        _steps.set_direct_damping(1, 5, self.direct_damping_ratio)
+        if self.mod_dyn:
+            _steps.create_modal_dynamics(1, 0.01)
+            _steps.set_direct_damping(1, 5, self.direct_damping_ratio)
 
 
         # assembly
@@ -134,13 +139,16 @@ class NumericalSystem:
         odb = output.load_odb(self.jobname)
 
         data = {}
-        data.update(output.plot_top_disp(odb))
+        if self.mod_dyn:
+            data.update(output.plot_top_disp(odb))
+            output.visual(self.results_dir, self.analysisname)
         data.update(output.freq(odb))
+        data.update(output.soil_u1(odb, self.col_r_e, self.soil_diameter / 2 - self.infinites_width))
+
         filename = self.results_dir + self.analysisname + ".txt"
         with open(filename, 'wb') as f:
             json.dump(data, f, indent=4)
 
-        output.visual(self.results_dir, self.analysisname)
 
         #odb.close(odb, write=TRUE)
 

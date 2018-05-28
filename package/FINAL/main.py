@@ -12,21 +12,21 @@ from _analysis import Analysis
 
 one_analysis = True
 
+# Materials
+steel = Material(name='steel', rho=7750, E=210.0e9, nu=0.30, zeta=0.0)
+soil = Soil(name='soil', rho=2000, E=87.5e6, nu=0.25, zeta=0.0,
+            phi=False)  # Soil is a subclass of Material with special properties
+
+# Section
+tube = HollowRoundSection(d_e=4.0, t=0.05)
+
 if one_analysis:
 
     '''------------------ Define Model ------------------'''
 
-    # Materials
-    steel = Material(name='steel', rho=7750, E=210.0e9, nu=0.30, zeta=0.0)
-    soil = Soil(name='soil', rho=2000, E=87.5e6, nu=0.25, zeta=0.0,
-                phi=False)  # Soil is a subclass of Material with special properties
-
-    # Section
-    tube = HollowRoundSection(d_e=4.0, t=0.05)
-
     # Parts
     super_str = Column(material=steel, section=tube, height=80)  # on soil
-    pile = Column(material=steel, section=tube, height=40)  # in soil
+    pile = Column(material=steel, section=tube, height=70)  # in soil
 
     '''------------------ Create & Run Analysis ------------------'''
 
@@ -39,25 +39,15 @@ if one_analysis:
 
 else:
 
-    hs = ((5, 2), (10, 4), (20, 8), (40, 20), (60, 30))
+    ph = (20, 25, 30, 40, 50, 61, 71)
 
-    for h in hs:
+    for h in ph:
 
         '''------------------ Define Model ------------------'''
 
-        # Materials
-        steel = Material(name='steel', rho=7750, E=210.0e9, nu=0.30, zeta=0.0)
-        soil =  Soil    (name='soil', rho=2000, E=87.5e6, nu=0.25, zeta=0.0, phi=0) # Soil is a subclass of Material with special properties
-
-
-        # Section
-        tube = HollowRoundSection(d_e=4.0, t=0.05)
-
-
         # Parts
-        super_str = Column(material=steel, section=tube, height=h[0]) # on soil
-        pile = Column(material=steel, section=tube, height=h[1]) # in soil
-
+        super_str = Column(material=steel, section=tube, height=80) # on soil
+        pile = Column(material=steel, section=tube, height=h) # in soil
 
 
         '''------------------ Create & Run Analysis ------------------'''
@@ -66,6 +56,10 @@ else:
 
         analysis = Analysis(model, result_dir)
         analysis.run_analytical()
-        analysis.run_numerical()
+        try:
+            analysis.run_numerical()
+        except Exception as e:
+            print >> sys.__stdout__, e
+            continue
         analysis.save_object()
         analysis.numerical_system.delete_model() # needed to performe multiple analysis in a row
