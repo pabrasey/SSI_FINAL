@@ -45,7 +45,7 @@ def plot_top_disp(odb):
     return {'top_disp_1': (x_, y_)}
 
 
-def visual(results_dir, analysisname):
+def visual(analysisbasename):
 
     session.viewports['Viewport: 1'].view.setViewpoint(viewVector=(0, -1, 0.5),
         cameraUpVector=(0, 0, 1))
@@ -55,9 +55,8 @@ def visual(results_dir, analysisname):
     session.animationController.play(duration=UNLIMITED)
     session.imageAnimationOptions.setValues(vpDecorations=ON, vpBackground=OFF,
                                             compass=ON, frameRate=16)
-    filename = results_dir + analysisname
     session.writeImageAnimation(
-        fileName=filename,
+        fileName=analysisbasename,
         format=QUICKTIME, canvasObjects=(session.viewports['Viewport: 1'], ))
 
 
@@ -68,44 +67,67 @@ def freq(odb):
     return {'freq' : region.historyOutputs['EIGFREQ'].data}
 
 
-def soil_u1(odb, x0, x1):
+def soil_u(odb, x0, x1, analysisbasename):
     # create path
-    points = tuple( (x, 0.0, 0.0) for x in arange(-x0, -x1, -1) )
-    pth = session.Path(name='hor_soil_path', type=POINT_LIST, expression=points)
+    pts_x = tuple( (x, 0.0, 0.0) for x in arange(-x0, -(x1 + 1), -1) )
+    pts_y = tuple( (0.0, y, 0.0) for y in arange(-x0, -(x1 + 1), -1) )
+    pth_x = session.Path(name='hor_soil_path_x', type=POINT_LIST, expression=pts_x)
+    pth_y = session.Path(name='hor_soil_path_y', type=POINT_LIST, expression=pts_y)
 
     # create xy data
     session.viewports['Viewport: 1'].odbDisplay.setFrame(step='frequency', frame=1)
-    session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
-        CONTOURS_ON_DEF,))
+    session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(CONTOURS_ON_DEF,))
 
     ret = {}
 
-    # U1
+    # U1 on x path
     session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
         variableLabel='U', outputPosition=NODAL, refinement=(COMPONENT, 'U1'),
     )
-    data = xyPlot.XYDataFromPath(path=pth, includeIntersections=False,
+    # save image
+    session.viewports['Viewport: 1'].view.setViewpoint(viewVector=(0, -1, 0.5),
+                                                       cameraUpVector=(0, 0, 1))
+    session.viewports['Viewport: 1'].view.fitView()
+    session.printToFile(analysisbasename + '_u1', PNG, (session.viewports['Viewport: 1'],))
+
+    data = xyPlot.XYDataFromPath(path=pth_x, includeIntersections=False,
                                 projectOntoMesh=False, pathStyle=UNIFORM_SPACING, numIntervals=int(x1-x0),
-                                projectionTolerance=0, shape=DEFORMED, labelType=TRUE_DISTANCE)
+                                projectionTolerance=0, shape=UNDEFORMED, labelType=TRUE_DISTANCE)
     ret.update(create_xy_dict(data, 'soil_u1'))
 
-    # U2
+    # U2 on y path
     session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
         variableLabel='U', outputPosition=NODAL, refinement=(COMPONENT, 'U2'),
     )
-    data = xyPlot.XYDataFromPath(path=pth, includeIntersections=False,
+    # save image
+    session.viewports['Viewport: 1'].view.setViewpoint(viewVector=(-1, 0, 0.5),
+                                                       cameraUpVector=(0, 0, 1))
+    session.viewports['Viewport: 1'].view.fitView()
+    session.printToFile(analysisbasename + '_u2', PNG, (session.viewports['Viewport: 1'],))
+
+    data = xyPlot.XYDataFromPath(path=pth_y, includeIntersections=False,
                                  projectOntoMesh=False, pathStyle=UNIFORM_SPACING, numIntervals=int(x1-x0),
-                                 projectionTolerance=0, shape=DEFORMED, labelType=TRUE_DISTANCE)
+                                 projectionTolerance=0, shape=UNDEFORMED, labelType=TRUE_DISTANCE)
     ret.update(create_xy_dict(data, 'soil_u2'))
 
-    # U3
+    # U3 on max of both
     session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
         variableLabel='U', outputPosition=NODAL, refinement=(COMPONENT, 'U3'),
     )
-    data = xyPlot.XYDataFromPath(path=pth, includeIntersections=False,
+    data3 = []
+    data3.append(
+        xyPlot.XYDataFromPath(path=pth_x, includeIntersections=False,
                                  projectOntoMesh=False, pathStyle=UNIFORM_SPACING, numIntervals=int(x1-x0),
-                                 projectionTolerance=0, shape=DEFORMED, labelType=TRUE_DISTANCE)
-    ret.update(create_xy_dict(data, 'soil_u3'))
+                                 projectionTolerance=0, shape=UNDEFORMED, labelType=TRUE_DISTANCE)
+    )
+    data3.append(
+        xyPlot.XYDataFromPath(path=pth_y, includeIntersections=False,
+                                 projectOntoMesh=False, pathStyle=UNIFORM_SPACING, numIntervals=int(x1 - x0),
+                                 projectionTolerance=0, shape=UNDEFORMED, labelType=TRUE_DISTANCE)
+    )
+    mx = [ max(map(abs, [d[1] for d in data3[0]] )) , max(map(abs, [d[1] for d in data3[1]] )) ]
+    ind = mx.index(max(mx))
+    ret.update(create_xy_dict(data3[ind], 'soil_u3'))
 
     return ret
 

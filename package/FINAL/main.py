@@ -10,7 +10,7 @@ result_dir = '../results/'
 from model import Material, HollowRoundSection, Column, Soil
 from _analysis import Analysis
 
-one_analysis = True
+one_analysis = False
 
 # Materials
 steel = Material(name='steel', rho=7750, E=210.0e9, nu=0.30, zeta=0.0)
@@ -25,8 +25,8 @@ if one_analysis:
     '''------------------ Define Model ------------------'''
 
     # Parts
-    super_str = Column(material=steel, section=tube, height=80)  # on soil
-    pile = Column(material=steel, section=tube, height=70)  # in soil
+    super_str = Column(material=steel, section=tube, height=20)  # on soil
+    pile = Column(material=steel, section=tube, height=5)  # in soil
 
     '''------------------ Create & Run Analysis ------------------'''
 
@@ -39,7 +39,7 @@ if one_analysis:
 
 else:
 
-    ph = (20, 25, 30, 40, 50, 61, 71)
+    ph = (5, 10, 15, 20, 25, 30, 40, 50, 61, 70)
 
     for h in ph:
 
@@ -54,7 +54,7 @@ else:
 
         model = {'steel': steel, 'soil': soil, 'tube': tube, 'super_str': super_str, 'pile': pile}
 
-        analysis = Analysis(model, result_dir)
+        analysis = Analysis(model, result_dir, serie_id='Ph_Sw300')
         analysis.run_analytical()
         try:
             analysis.run_numerical()

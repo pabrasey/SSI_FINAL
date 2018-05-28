@@ -220,7 +220,7 @@ xy3 = param_analysis(data, 'pile_depth', 'soilU_oi',
 plot_xy(xy3[0], xy3[1], 'Ratio In/Out', 'pile_depth', 'soilU_oi', True)
 
 for i in range(1,3,1):
-    #plot_soil_u(filenames[-i])
+    plot_soil_u(filenames[-i])
     pass
 
 for filename in filenames:

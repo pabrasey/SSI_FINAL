@@ -24,10 +24,10 @@ class NumericalSystem:
         ''' ---------- Variables ---------- '''
 
         # soil
-        self.pile_soil_space = 20
-        self.soil_depth = foundation.h + self.pile_soil_space
-        self.soil_diameter = 200 #3.0 * super_str.h
-        self.infinites_width = 4
+        self.soil_depth = 100
+        self.pile_soil_space = self.soil_depth - foundation.h
+        self.soil_diameter = 300 #3.0 * super_str.h
+        self.infinites_width = 2
         self.infinites_bottom = False
         self.fixed_sides = False
         self.contact_col_soil = False # False -> tie constraints, True -> contact
@@ -67,7 +67,7 @@ class NumericalSystem:
         soil_part.create_part(self.soil_diameter, self.soil_depth)
         soil_part.cut_extrude(super_str.sec.d_e, super_str.sec.t, foundation.h)
 
-        soil_part.partition_side_infinite(self.soil_diameter - self.infinites_width)
+        soil_part.partition_side_infinite(self.soil_diameter - 2 * self.infinites_width)
         soil_part.partition_bottom(space=self.pile_soil_space)
 
         # column
@@ -138,15 +138,15 @@ class NumericalSystem:
         job.waitForCompletion()
         odb = output.load_odb(self.jobname)
 
+        analysisbasename = self.results_dir + self.analysisname
         data = {}
         if self.mod_dyn:
             data.update(output.plot_top_disp(odb))
-            output.visual(self.results_dir, self.analysisname)
+            output.visual(analysisbasename)
         data.update(output.freq(odb))
-        data.update(output.soil_u1(odb, self.col_r_e, self.soil_diameter / 2 - self.infinites_width))
+        data.update(output.soil_u(odb, self.col_r_e, self.soil_diameter / 2 - self.infinites_width, analysisbasename))
 
-        filename = self.results_dir + self.analysisname + ".txt"
-        with open(filename, 'wb') as f:
+        with open(analysisbasename + ".txt", 'wb') as f:
             json.dump(data, f, indent=4)
 
 
