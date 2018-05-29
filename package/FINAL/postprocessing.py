@@ -8,15 +8,20 @@ from prettytable import PrettyTable
 import decimal
 import pyglet
 from pylab import plot, show, title, xlabel, ylabel, legend
+import pylab as plt
 import frequency
 
 
-def show_table(data):
+def show_table(data, file=False):
 
     t = PrettyTable(data[0].keys())
     for row in data:
         t.add_row(row.values())
     print(t)
+
+    if file:
+        with open('results/summary.txt', 'w') as f:
+            f.write(t.get_string())
 
 
 def get_data(filenames):
@@ -36,7 +41,7 @@ def get_data(filenames):
             if not 'pile_active_l' in sdof: sdof['pile_active_l'] = 'NaN'
 
         dic = OrderedDict([
-            ('name'      ,   filename[7:-4]),
+            ('name'      ,   filename),
             ('s_id'      ,   lysis['serie_id']),
             ('s_str_h'   ,   super_str['h']),
             ('pile_depth',   pile['h']),
@@ -57,7 +62,8 @@ def get_data(filenames):
                 soil_u = [ abq_res['soil_u1'], abq_res['soil_u2'], abq_res['soil_u3'] ]
                 mx = [max( map(abs, u[1]) ) for u in soil_u] # max displacement in each direction
                 dof = mx.index(max( mx )) # direction of max displacement
-                soilU_ratio = "%.3f" % (soil_u[dof][1][-1] / soil_u[dof][1][0])
+                #soilU_ratio = "%.3f" % (soil_u[dof][1][-1] / soil_u[dof][1][0])
+                soilU_ratio = "%.3f" % (soil_u[2][1][-1] / soil_u[2][1][0])
             else:
                 dof = -1
                 soilU_ratio = 'NaN'
@@ -82,7 +88,7 @@ def get_data(filenames):
                 ('soil_width',   'NaN'),
                 ('soil_mesh',    'NaN'),
                 ('fix_sides',    'NaN'),
-                ('soilU_oi',    'NaN'),
+                ('soilU_oi',     'NaN'),
                 ('dir',          'NaN'),
             ])
 
@@ -107,13 +113,16 @@ def plot_soil_u(analysisname):
     soil_u2 = abq_res['soil_u2']
     plot_xy(soil_u2[0], soil_u2[1], 'U2', 'x [m] (path)', 'U [m]', False)
     soil_u3 = abq_res['soil_u3']
-    plot_xy(soil_u3[0], soil_u3[1], 'U3', 'x [m] (path)', 'U [m]', True)
+    plot_xy(soil_u3[0], soil_u3[1], 'U3', 'x [m] (path)', 'U [m]', True, title=analysisname)
 
 
 
-def plot_xy(x, y, label, xlab, ylab, show_):
+def plot_xy(x, y, label, xlab, ylab, show_, title=''):
     plot(x, y, label=label)
+    for xy in zip(x, y):
+        plt.annotate( xy[1], xy=xy, textcoords='data')
     if show_:
+        plt.title(title)
         legend(framealpha=1, frameon=False);
         xlabel(xlab)
         ylabel(ylab)
@@ -168,7 +177,7 @@ def param_analysis(data, x, y, discarded, needed):
             del d[disc]
 
     # get the duplicates
-    dupe_ind = [n for n, e in enumerate(data) if e in data[:n]]
+    dupe_ind = [n for n, e in enumerate(data) if e in data[:n] + data[n+1:]]
 
     # create list of dupes containing the whole data
     # and remove entries that do not have the needed arguments
@@ -201,7 +210,8 @@ filenames = sorted([os.path.basename(os.path.splitext(x)[0]) for x in glob.glob(
 filenames.sort(key=lambda x: os.path.getmtime(model_dir + x + '.txt'))
 
 data = get_data(filenames)
-show_table(data)
+show_table(data, file=True)
+
 
 def soil_width_analysis():
     xy1 = param_analysis(data, 'soil_width', 'Abq f_n',
@@ -210,19 +220,39 @@ def soil_width_analysis():
     xy2 = param_analysis(data, 'soil_width', 'Abq f_n',
                    ['contact', 'soil_mesh', 'pile_act_l'],
                    [('s_str_h', 80), ('soil_depth', 60), ('fix_sides', False), ])
+    plot_xy(xy1[0], xy1[1], label='fixed sides', xlab='Soil Width [m]', ylab='Abaqus Frequency [Hz]', show_=False)
+    plot_xy(xy2[0], xy2[1], label='infinite sides', xlab='Soil Width [m]', ylab='Abaqus Frequency [Hz]', show_=True)
+
+soil_width_analysis()
 
 
-xy3 = param_analysis(data, 'pile_depth', 'soilU_oi',
-               ['contact', 'soil_depth', 'pile_act_l', 'Abq f_n'],
-               [('s_str_h', 80), ('fix_sides', False), ('s_id', '0')])
+def ratio_io_analysis():
+    xy3 = param_analysis(data, 'pile_depth', 'soilU_oi',
+                   ['contact', 'soil_depth', 'pile_act_l', 'Abq f_n'],
+                   [('s_id', 'Ph+20_Sw300')])
+    plot_xy(xy3[0], xy3[1], 'Ratio U3 boundary/center', 'Pile Length', 'Ratio', True)
 
+#ratio_io_analysis()
+2
 
-plot_xy(xy3[0], xy3[1], 'Ratio In/Out', 'pile_depth', 'soilU_oi', True)
-
-for i in range(1,3,1):
-    plot_soil_u(filenames[-i])
+for i in range(1,7,1):
+    #plot_soil_u(filenames[-i])
     pass
 
 for filename in filenames:
     #show_graphics(filename)
     pass
+
+
+def revome_analysis(data, criterias):
+    for d in data:
+        for crit in criterias:
+            if d[crit[0]] == crit[1]:
+                abq_path = abaqus_dir + d['name'] + '.txt'
+                mod_path = model_dir + d['name'] + '.txt'
+                print abq_path
+                #os.remove(path)
+                #os.remove(mod_path)
+                break
+
+#revome_analysis(data, [('s_id', '0')])
