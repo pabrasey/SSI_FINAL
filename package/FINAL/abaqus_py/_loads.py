@@ -31,6 +31,7 @@ def soil_initial_conditions(depth, rho_soil):
                                            stressMag1=0, vCoord1=0, stressMag2= - depth * rho_soil * 9.81, vCoord2= - depth,
                                            lateralCoeff1=0.5, lateralCoeff2=None)
 
+
 def fix_base_bc():
     a = mdb.models['3D_MODEL'].rootAssembly
     f1 = a.instances['soil-1'].faces

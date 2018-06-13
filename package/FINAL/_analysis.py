@@ -21,6 +21,7 @@ class Analysis:
 
         # identify the analysis with time
         n = datetime.now()
+        self.start = n
         self.analysisname = str(n.year) + '_' + str(n.month) + '_' + str(n.day) + '--' + str(n.hour) + '_' + str(n.minute) + '_' + str(n.microsecond)
         self.results_dir = results_dir
 
@@ -29,7 +30,7 @@ class Analysis:
 
 
     def run_analytical(self):
-        self.analytical_system = AnalyticalSystem(column=self.super_str, foundation=self.pile,
+        self.analytical_system = AnalyticalSystem(super_str=self.super_str, foundation=self.pile,
                                                   soil=self.soil, analysisname=self.analysisname)
 
 
@@ -40,6 +41,7 @@ class Analysis:
                                                 results_dir=self.results_dir + 'abaqus/', analysisname=self.analysisname)
         self.numerical_system.run_analysis()
         self.numerical_system.output()
+        self.numerical_system.duration = (datetime.now() - self.start).total_seconds() / 60 # duration of analysis in minutes
 
 
     def save_object(self):

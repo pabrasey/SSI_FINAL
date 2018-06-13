@@ -11,12 +11,14 @@ from pylab import plot, show, title, xlabel, ylabel, legend
 import pylab as plt
 import frequency
 
+''' ---------------------- FUNCTIONS TO GET DATA ---------------------- '''
 
 def show_table(data, file=False):
 
     t = PrettyTable(data[0].keys())
     for row in data:
         t.add_row(row.values())
+    t.sortby = "s_id"
     print(t)
 
     if file:
@@ -44,11 +46,12 @@ def get_data(filenames):
             ('name'      ,   filename),
             ('s_id'      ,   lysis['serie_id']),
             ('s_str_h'   ,   super_str['h']),
+            ('G_soil'    ,   float(soil['G']) / 1e6),
             ('pile_depth',   pile['h']),
             ('pile_act_l',   sdof['pile_active_l']),
-            ('r_e'       ,   tube['r_e']),
+            ('d_e'       ,   tube['d_e']),
             ('t'         ,   tube['t']),
-            ('Gaz. f_n'  ,   sdof['f_n']),
+            ('Gaz. f_n'  ,   "%.3f" % sdof['f_n']),
         ])
 
         # abaqus results
@@ -67,9 +70,15 @@ def get_data(filenames):
             else:
                 dof = -1
                 soilU_ratio = 'NaN'
+            if not sdof.has_key('f_col'):
+                sdof['f_col'] = 0
+            if not sdof.has_key('k_col'):
+                sdof['k_col'] = 0
+            if not n_sys.has_key('duration'):
+                n_sys['duration'] = 'NaN'
 
             dic.update([
-                ('Abq f_n'   ,   f_n),
+                ('Abq f_n'   ,   "%.3f" % f_n),
                 ('contact'   ,   n_sys['contact_col_soil']),
                 ('phi'       ,   soil['phi']),
                 ('soil_depth',   n_sys['soil_depth']),
@@ -77,7 +86,8 @@ def get_data(filenames):
                 ('soil_mesh' ,   n_sys['soil_mesh_size']),
                 ('fix_sides' ,   n_sys['fixed_sides']),
                 ('soilU_oi'  ,   soilU_ratio),
-                ('dir'       ,   dof + 1 ),
+                ('PLR'       ,   "%.2f" % (float(sdof['f_col']) / float(f_n)) ),
+                ('time [min]',   n_sys['duration']),
             ])
         else:
             dic.update([
@@ -89,7 +99,8 @@ def get_data(filenames):
                 ('soil_mesh',    'NaN'),
                 ('fix_sides',    'NaN'),
                 ('soilU_oi',     'NaN'),
-                ('dir',          'NaN'),
+                ('PLR',          'NaN'),
+                ('time [min]',   'NaN'),
             ])
 
         data.append(dic) # add to list of data
@@ -109,21 +120,59 @@ def get_abq_data(filename):
 def plot_soil_u(analysisname):
     abq_res = get_abq_data(analysisname)
     soil_u1 = abq_res['soil_u1']
-    plot_xy(soil_u1[0], soil_u1[1], 'U1', 'x [m] (path)', 'U [m]', False)
+    plot_xy(soil_u1[0], soil_u1[1], 'U1', 'x [m] (path)', 'U [m]', False, annote=False)
     soil_u2 = abq_res['soil_u2']
-    plot_xy(soil_u2[0], soil_u2[1], 'U2', 'x [m] (path)', 'U [m]', False)
+    plot_xy(soil_u2[0], soil_u2[1], 'U2', 'x [m] (path)', 'U [m]', False, annote=False)
     soil_u3 = abq_res['soil_u3']
-    plot_xy(soil_u3[0], soil_u3[1], 'U3', 'x [m] (path)', 'U [m]', True, title=analysisname)
+    plot_xy(soil_u3[0], soil_u3[1], 'U3', 'x [m] (path)', 'U [m]', True, title=analysisname, annote=False)
+
+''' ---------------------- FUNCTIONS FOR ANALYSES ---------------------- '''
+
+def param_analysis(data, x, y, discarded, needed):
+    full_data = copy.deepcopy(data)
+    data = copy.deepcopy(data)
+
+    # remove the x, y and discarded keys in data
+    for d in data:
+        del d[x], d[y], d['name'], d['time [min]']
+        for disc in discarded:
+            del d[disc]
+
+    # get the duplicates
+    dupe_ind = [n for n, e in enumerate(data) if e in data[:n] + data[n+1:]]
+
+    # create list of dupes containing the whole data
+    # and remove entries that do not have the needed arguments
+    full_dupes = []
+    i = 0
+    for n in dupe_ind:
+        full_dupes.append(full_data[n])
+        for need in needed:
+            if not full_dupes[i][need[0]] == need[1]:
+                del full_dupes[i]
+                i -= 1
+                break
+        i += 1
+
+    # create plot data
+    xy_ = []
+    for d in full_dupes:
+        xy_.append((d[x], d[y]))
+
+    x_ = [ xy_s[0] for xy_s in sorted(xy_) ]
+    y_ = [ xy_s[1] for xy_s in sorted(xy_) ]
+
+    return (x_, y_)
 
 
-
-def plot_xy(x, y, label, xlab, ylab, show_, title=''):
+def plot_xy(x, y, label, xlab, ylab, show_, title='', annote=True):
     plot(x, y, label=label)
-    for xy in zip(x, y):
-        plt.annotate( xy[1], xy=xy, textcoords='data')
+    if annote: # annote each point with the y value
+        for xy in zip(x, y):
+            plt.annotate( xy[1], xy=xy, textcoords='data')
     if show_:
         plt.title(title)
-        legend(framealpha=1, frameon=False);
+        legend(framealpha=1, frameon=True, ncol=1, fancybox=True, loc=(0.5,0.5)); # name of the curve
         xlabel(xlab)
         ylabel(ylab)
         show()
@@ -166,52 +215,18 @@ def show_gif(filename):
     pyglet.app.run()
 
 
-def param_analysis(data, x, y, discarded, needed):
-    full_data = copy.deepcopy(data)
-    data = copy.deepcopy(data)
-
-    # remove the x, y and discarded keys in data
-    for d in data:
-        del d[x], d[y], d['name']
-        for disc in discarded:
-            del d[disc]
-
-    # get the duplicates
-    dupe_ind = [n for n, e in enumerate(data) if e in data[:n] + data[n+1:]]
-
-    # create list of dupes containing the whole data
-    # and remove entries that do not have the needed arguments
-    full_dupes = []
-    i = 0
-    for n in dupe_ind:
-        full_dupes.append(full_data[n])
-        for need in needed:
-            if not full_dupes[i][need[0]] == need[1]:
-                del full_dupes[i]
-                i -= 1
-                break
-        i += 1
-
-    # create plot data
-    xy_ = []
-    for d in full_dupes:
-        xy_.append((d[x], d[y]))
-
-    x_ = [ xy_s[0] for xy_s in sorted(xy_) ]
-    y_ = [ xy_s[1] for xy_s in sorted(xy_) ]
-
-    return (x_, y_)
-
+''' ---------------------- GET RESULTS ---------------------- '''
 
 model_dir = 'results/models/'
 abaqus_dir = 'results/abaqus/'
 
-filenames = sorted([os.path.basename(os.path.splitext(x)[0]) for x in glob.glob(model_dir + '2018_5_*')])
+filenames = sorted([os.path.basename(os.path.splitext(x)[0]) for x in glob.glob(model_dir + '2018_6*')])
 filenames.sort(key=lambda x: os.path.getmtime(model_dir + x + '.txt'))
 
 data = get_data(filenames)
 show_table(data, file=True)
 
+''' ---------------------- ANALYSES ---------------------- '''
 
 def soil_width_analysis():
     xy1 = param_analysis(data, 'soil_width', 'Abq f_n',
@@ -223,7 +238,7 @@ def soil_width_analysis():
     plot_xy(xy1[0], xy1[1], label='fixed sides', xlab='Soil Width [m]', ylab='Abaqus Frequency [Hz]', show_=False)
     plot_xy(xy2[0], xy2[1], label='infinite sides', xlab='Soil Width [m]', ylab='Abaqus Frequency [Hz]', show_=True)
 
-soil_width_analysis()
+#soil_width_analysis()
 
 
 def ratio_io_analysis():
@@ -233,26 +248,89 @@ def ratio_io_analysis():
     plot_xy(xy3[0], xy3[1], 'Ratio U3 boundary/center', 'Pile Length', 'Ratio', True)
 
 #ratio_io_analysis()
-2
 
-for i in range(1,7,1):
+
+def Ph_analysis():
+    xy1 = param_analysis(data, 'pile_depth', 'Abq f_n',
+                       ['SSI_ind', 'Gaz. f_n'],
+                       [('s_id', 'Ph_d4_h80_Gs35')])
+    xy2 = param_analysis(data, 'pile_depth', 'Abq f_n',
+                         ['SSI_ind', 'Gaz. f_n'],
+                         [('s_id', 'Ph_d4_h80_Gs10')])
+    plot_xy(xy1[0], xy1[1], 'Abaqus G_soil=35Mpa', xlab='Pile Length', ylab='Frequency [Hz]', show_=False)
+    plot_xy(xy2[0], xy2[1], 'Abaqus G_soil=10Mpa', xlab='Pile Length', ylab='Frequency [Hz]', show_=True)
+
+#Ph_analysis()
+
+
+def freq_Ph():
+    xy1 = param_analysis(data, 'pile_depth', 'Abq f_n',
+                       ['PLR', 'Gaz. f_n'],
+                       [('s_id', 'Ph_Pd6_H80_SE10_Sd300')])
+    xy2 = param_analysis(data, 'pile_depth', 'Abq f_n',
+                         ['PLR', 'Gaz. f_n'],
+                         [('s_id', 'Ph_Pd6_H80_SE35_Sd300')])
+    xy3 = param_analysis(data, 'pile_depth', 'Abq f_n',
+                         ['PLR', 'Gaz. f_n'],
+                         [('s_id', 'Ph_Pd6_H80_SE87.5_Sd300')])
+    plot_xy(xy1[0], xy1[1], 'G_soil=4Mpa', xlab='Pile Length [m]', ylab='Abq f_n', show_=False)
+    plot_xy(xy2[0], xy2[1], 'G_soil=14Mpa', xlab='Pile Length [m]', ylab='Abq f_n', show_=False)
+    plot_xy(xy3[0], xy3[1], 'G_soil=35Mpa', xlab='Pile Length [m]', ylab='Abq f_n', show_=True)
+
+#freq_Ph()
+
+
+def PLR_Ph():
+    xy1 = param_analysis(data, 'pile_depth', 'PLR',
+                       ['Abq f_n', 'Gaz. f_n'],
+                       [('s_id', 'Ph_Pd6_H80_SE10_Sd300')])
+    xy2 = param_analysis(data, 'pile_depth', 'PLR',
+                         ['Abq f_n', 'Gaz. f_n'],
+                         [('s_id', 'Ph_Pd6_H80_SE35_Sd300')])
+    xy3 = param_analysis(data, 'pile_depth', 'PLR',
+                         ['Abq f_n', 'Gaz. f_n'],
+                         [('s_id', 'Ph_Pd6_H80_SE87.5_Sd300')])
+    plot_xy(xy1[0], xy1[1], 'G_soil=4Mpa', xlab='Pile Length [m]', ylab='PLR', show_=False)
+    plot_xy(xy2[0], xy2[1], 'G_soil=14Mpa', xlab='Pile Length [m]', ylab='PLR', show_=False)
+    plot_xy(xy3[0], xy3[1], 'G_soil=35Mpa', xlab='Pile Length [m]', ylab='PLR', show_=True)
+
+#PLR_Ph()
+
+
+def PLR_Pd():
+    xy1 = param_analysis(data, 'pile_depth', 'PLR',
+                       ['Abq f_n', 'Gaz. f_n'],
+                       [('s_id', '')])
+    plot_xy(xy1[0], xy1[1], 'G_soil=35Mpa', xlab='Pile Diameter [m]', ylab='PLR', show_=True)
+
+#PLR_Pd()
+
+
+for i in range(1,4,1):
     #plot_soil_u(filenames[-i])
     pass
+
+#plot_soil_u('2018_5_29--7_57_937000')
 
 for filename in filenames:
     #show_graphics(filename)
     pass
 
 
-def revome_analysis(data, criterias):
+def remove_analysis(data, criterias):
     for d in data:
         for crit in criterias:
             if d[crit[0]] == crit[1]:
-                abq_path = abaqus_dir + d['name'] + '.txt'
                 mod_path = model_dir + d['name'] + '.txt'
-                print abq_path
-                #os.remove(path)
-                #os.remove(mod_path)
+                abq_path = abaqus_dir + d['name'] + '.txt'
+                u1_path = abaqus_dir + d['name'] + '_u1.png'
+                u2_path = abaqus_dir + d['name'] + '_u2.png'
+                print mod_path
+                os.remove(mod_path)
+                os.remove(abq_path)
+                os.remove(u1_path)
+                os.remove(u2_path)
                 break
 
-#revome_analysis(data, [('s_id', '0')])
+#remove_analysis(data, [('name', '2018_6_10--22_5_978000')])
+#remove_analysis(data, [('s_id', 'Ph_Pd6_H80_SE87.5_Sd300_')])

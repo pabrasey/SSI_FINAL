@@ -39,7 +39,16 @@ class Sdof(Mode, object):
         modes = (c_mode, h_mode, r_mode)
         o.m = m
         o.omega_ns = list(obj.omega_n for obj in modes)
-        o.ks = (c_mode.k, h_mode.k, r_mode.k / o.H**2)
+        o.f_col = c_mode.f_n
+        o.k_col = c_mode.k
+
+        # stiffness
+        k_c = c_mode.k
+        k_h = h_mode.k
+        k_r_ = r_mode.k / o.H**2
+        o.ks = (k_c, k_h, k_r_)
+
+        # damping
         o.zetas = list(obj.zeta for obj in modes)
 
         # compute system properties
@@ -53,6 +62,8 @@ class Sdof(Mode, object):
         o.omega_d = o.omega_n * sqrt(1 - o.zeta ** 2)
         o.f_n = o.omega_n / (2 * pi)
         o.T_n = 1 / o.f_n
+
+        o.k_rel = k_c / ( (k_h * k_r_) / (k_h + k_r_) ) # relative stiffness
 
         # SSI Indexes
         o.SDR = o.zeta

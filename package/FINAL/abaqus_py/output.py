@@ -45,7 +45,7 @@ def plot_top_disp(odb):
     return {'top_disp_1': (x_, y_)}
 
 
-def visual(analysisbasename):
+def visual_dyn(analysisbasename):
 
     session.viewports['Viewport: 1'].view.setViewpoint(viewVector=(0, -1, 0.5),
         cameraUpVector=(0, 0, 1))

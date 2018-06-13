@@ -22,11 +22,11 @@ import connectorBehavior
 
 def assign_properties(infinite_bottom):
     # column
-    # tet meshing
+    # hex meshing
     a = mdb.models['3D_MODEL'].rootAssembly
     c1 = a.instances['column-1'].cells
     pickedRegions = c1.getSequenceFromMask(mask=('[#3 ]',), )
-    a.setMeshControls(regions=pickedRegions, elemShape=TET, technique=FREE,
+    a.setMeshControls(regions=pickedRegions, elemShape=HEX, technique=SWEEP,
                       algorithm=MEDIAL_AXIS)
     # C3D8 elements
     elemType1 = mesh.ElemType(elemCode=C3D8)

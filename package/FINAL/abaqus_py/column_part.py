@@ -42,7 +42,13 @@ def create_part(super_str, foundation, mass):
     del mdb.models['3D_MODEL'].sketches['__profile__']
 
     # mass at the top
-
+    p = mdb.models['3D_MODEL'].parts['column']
+    v = p.vertices
+    verts = v.getSequenceFromMask(mask=('[#1 ]',), )
+    region = regionToolset.Region(vertices=verts)
+    mdb.models['3D_MODEL'].parts['column'].engineeringFeatures.PointMassInertia(
+        name='top_mass', region=region, mass=mass, alpha=0.0,
+        composite=0.0)
 
 
 def partition(foundation):
@@ -50,17 +56,9 @@ def partition(foundation):
     p = mdb.models['3D_MODEL'].parts['column']
     p.DatumPlaneByPrincipalPlane(principalPlane=XYPLANE, offset=foundation.h)
 
-    p = mdb.models['3D_MODEL'].parts['column']
-    c = p.cells
-    pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
-    d = p.datums
-    p.PartitionCellByDatumPlane(datumPlane=d[2], cells=pickedCells)
-
-'''
-
+    # partition
     p = mdb.models['3D_MODEL'].parts['column']
     c = p.cells
     pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
     d = p.datums
     p.PartitionCellByDatumPlane(datumPlane=d[3], cells=pickedCells)
-'''

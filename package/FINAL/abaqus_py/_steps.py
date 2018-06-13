@@ -21,30 +21,34 @@ import displayGroupOdbToolset as dgo
 import connectorBehavior
 
 
-def static():
+def freq_analysis(numEigen, minEigen, maxEigen):
+    # frequency step
+    mdb.models['3D_MODEL'].FrequencyStep(name='frequency', previous='Initial',
+        maxEigen=maxEigen, minEigen=minEigen, numEigen=numEigen)
+
+
+def mod_dyn(timePeriod, incSize):
     # geostatic
     mdb.models['3D_MODEL'].GeostaticStep(name='geostatic', previous='Initial', timeIncrementationMethod=FIXED )
 
     # static
     mdb.models['3D_MODEL'].StaticStep(name='static', previous='geostatic')
 
-
-def create_frequency(numEigen, minEigen, maxEigen):
+    # frequency
     mdb.models['3D_MODEL'].FrequencyStep(name='frequency', previous='static',
-        maxEigen=maxEigen, minEigen=minEigen, numEigen=numEigen)
+                                         maxEigen=maxEigen, minEigen=minEigen, numEigen=numEigen)
 
-
-def create_ini_disp():
+    # initial displacement
     mdb.models['3D_MODEL'].StaticLinearPerturbationStep(name='ini_disp',
-        previous='frequency')
+                                                        previous='frequency')
 
-
-def create_modal_dynamics(timePeriod, incSize):
+    # modal dynamics
     mdb.models['3D_MODEL'].ModalDynamicsStep(name='modal_dynamics',
-        previous='ini_disp', timePeriod=timePeriod, incSize=incSize)
+                                             previous='ini_disp', timePeriod=timePeriod, incSize=incSize)
     # field output every 1 increment
     mdb.models['3D_MODEL'].fieldOutputRequests['F-Output-3'].setValues(frequency=1)
     mdb.models['3D_MODEL'].fieldOutputRequests['F-Output-4'].setValues(frequency=1)
+
 
 
 def set_direct_damping(mode1, mode2, ratio):

@@ -24,15 +24,15 @@ class NumericalSystem:
         ''' ---------- Variables ---------- '''
 
         # soil
-        self.pile_soil_space = 20
-        self.soil_depth = foundation.h + self.pile_soil_space
-        #self.soil_depth = 100
-        #self.pile_soil_space = self.soil_depth - foundation.h
-        self.soil_diameter = 100 #3.0 * super_str.h
+        #self.pile_soil_space = 20
+        #self.soil_depth = foundation.h + self.pile_soil_space
+        self.soil_depth = 100
+        self.pile_soil_space = self.soil_depth - foundation.h
+        self.soil_diameter = 400 #3.0 * super_str.h
         self.infinites_width = 2
         self.infinites_bottom = False
-        self.fixed_sides = False
-        self.contact_col_soil = False # False -> tie constraints, True -> contact
+        self.fixed_sides = True
+        self.contact_col_soil = True # False -> tie constraints, True -> contact
 
         # mesh
         self.col_mesh_size = 4
@@ -73,7 +73,7 @@ class NumericalSystem:
         soil_part.partition_bottom(space=self.pile_soil_space)
 
         # column
-        column_part.create_part(super_str, foundation, 350.0e3)
+        column_part.create_part(super_str, foundation, super_str.topmass)
         column_part.partition(foundation)
 
 
@@ -87,12 +87,12 @@ class NumericalSystem:
 
 
         # steps
-        _steps.static() # both geostatic and static step
-        _steps.create_frequency(self.numEigen, self.minEigen, self.maxEigen)
-        _steps.create_ini_disp()
-        if self.mod_dyn:
-            _steps.create_modal_dynamics(1, 0.01)
+
+        if self.mod_dyn: # modal dynamic analysis with geo- statitc steps before
+            _steps.mod_dyn(2, 0.01)
             _steps.set_direct_damping(1, 5, self.direct_damping_ratio)
+        else:
+            _steps.freq_analysis(self.numEigen, self.minEigen, self.maxEigen)
 
 
         # assembly
@@ -110,12 +110,14 @@ class NumericalSystem:
 
 
         # ic, bc, constraints and loads.py
-        _loads.soil_initial_conditions(depth=self.soil_depth, rho_soil=soil.rho)
+
         _loads.fix_base_bc()
         if self.fixed_sides:
             _loads.fix_sides_bc()
-        _loads.ini_disp(super_str.h / 300.0)
-        _loads.gravity() # applied separatelly for soil and structure in the related steps
+        if self.mod_dyn:
+            _loads.soil_initial_conditions(depth=self.soil_depth, rho_soil=soil.rho)
+            _loads.ini_disp(super_str.h / 300.0)
+            _loads.gravity() # applied separatelly for soil and structure in the related steps
 
 
         # job
@@ -144,11 +146,11 @@ class NumericalSystem:
         data = {}
         if self.mod_dyn:
             data.update(output.plot_top_disp(odb))
-            output.visual(analysisbasename)
+            output.visual_dyn(analysisbasename)
         data.update(output.freq(odb))
         data.update(output.soil_u(odb, self.col_r_e, self.soil_diameter / 2 - self.infinites_width, analysisbasename))
 
-        with open(analysisbasename + ".txt", 'wb') as f:
+        with open(analysisbasename + ".txt", 'wb') as f: # save results in json file
             json.dump(data, f, indent=4)
 
 

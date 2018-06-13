@@ -43,11 +43,12 @@ class HollowRoundSection:
 
 class Column:
 
-    def __init__(o, material, section, height):
+    def __init__(o, material, section, height, topmass=0):
 
         o.mat = material
         o.sec = section
         o.h = height
+        o.topmass = topmass
 
         o.k = 3 * o.mat.E * o.sec.I_y / (o.h ** 3)   # N / m ^ 2 * m ^ 4 / m ^ 3 = N / m
         o.m = o.sec.A * o.h * o.mat.rho

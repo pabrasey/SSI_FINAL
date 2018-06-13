@@ -11,7 +11,7 @@ class FoundationMode(object):
         o.s = soil
         o.m = o.f.m
         o.a0 = a0
-        o.active_l = 2 * o.f.sec.d * (o.f.mat.E / o.s.E)**0.20
+        o.active_l = 2 * o.f.sec.d * (o.f.mat.E / o.s.E)**0.25
 
 
 class HorizontalPile(FoundationMode, object):
@@ -27,7 +27,7 @@ class HorizontalPile(FoundationMode, object):
 
     def stiffness(o, d, E_p, E_s_):
 
-        o.k_st = 0.6 * d * E_s_ * (E_p / E_s_)**0.35
+        o.k_st =  d * E_s_ * (E_p / E_s_)**0.21      # linear increasing E modulus: 0.6 * d * E_s_ * (E_p / E_s_)**0.35
         o.k_co = 1
         o.k_dyn = o.k_co * o.k_st
         return o.k_dyn
@@ -52,7 +52,7 @@ class RockPile(FoundationMode, object):
 
     def stiffness(o, d, E_p, E_s_):
 
-        o.k_st = 0.15 * d**3 * E_s_ * (E_p / E_s_)**0.80
+        o.k_st = 0.15 * d**3 * E_s_ * (E_p / E_s_)**0.75
         o.k_co = 1
         o.k_dyn = o.k_co * o.k_st
         return o.k_dyn
