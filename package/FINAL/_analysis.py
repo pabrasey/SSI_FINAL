@@ -25,14 +25,12 @@ class Analysis:
         self.analysisname = str(n.year) + '_' + str(n.month) + '_' + str(n.day) + '--' + str(n.hour) + '_' + str(n.minute) + '_' + str(n.microsecond)
         self.results_dir = results_dir
 
-        # run the analysis
-        self.print_objects()
 
 
     def run_analytical(self):
         self.analytical_system = AnalyticalSystem(super_str=self.super_str, foundation=self.pile,
                                                   soil=self.soil, analysisname=self.analysisname)
-
+        self.print_objects()
 
     def run_numerical(self):
         from abaqus_py.system import NumericalSystem
@@ -40,7 +38,7 @@ class Analysis:
                                                 foundation=self.pile,
                                                 results_dir=self.results_dir + 'abaqus/', analysisname=self.analysisname)
         self.numerical_system.run_analysis()
-        self.numerical_system.output()
+        #self.numerical_system.output()
         self.numerical_system.duration = (datetime.now() - self.start).total_seconds() / 60 # duration of analysis in minutes
 
 
@@ -66,3 +64,4 @@ class Analysis:
         print '\n Tube Section'
         pprint(vars(self.tube))
         print '------------------------------ RESULTS -----------------------------------'
+        self.analytical_system.print_objects()

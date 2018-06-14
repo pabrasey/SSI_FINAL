@@ -11,9 +11,10 @@ class Material:
         o.rho = rho
         o.zeta = zeta
 
+
 class Soil(Material, object):
 
-    def __init__(o, name, E, nu, rho, zeta, phi):
+    def __init__(o, name, E, nu, rho, zeta, phi, diameter=400, depth=100):
 
         # create material
         super(Soil, o).__init__(name, E, nu, rho, zeta)
@@ -23,6 +24,8 @@ class Soil(Material, object):
         o.G = o.E / (2 * (1 + o.nu))
         o.V_s = sqrt(o.G / o.rho)
         o.V_La = 3.4 / (pi * 1 - o.nu) * o.V_s
+        o.diameter = diameter # used in Abaqus
+        o.depth = depth
 
 
 class HollowRoundSection:

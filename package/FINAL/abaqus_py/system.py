@@ -26,9 +26,9 @@ class NumericalSystem:
         # soil
         #self.pile_soil_space = 20
         #self.soil_depth = foundation.h + self.pile_soil_space
-        self.soil_depth = 100
+        self.soil_depth = soil.depth
         self.pile_soil_space = self.soil_depth - foundation.h
-        self.soil_diameter = 400 #3.0 * super_str.h
+        self.soil_diameter = soil.diameter #3.0 * super_str.h
         self.infinites_width = 2
         self.infinites_bottom = False
         self.fixed_sides = True
@@ -40,12 +40,13 @@ class NumericalSystem:
         self.contact_mesh_size = 2 # not used at the moment !
 
         # frequency analysis
-        self.numEigen = 2  # number of eigenvalue to search for
+        self.numEigen = 6  # number of eigenvalue to search for
         self.minEigen = 0  # minimal frequency of interest
         self.maxEigen = 50.0  # max
 
-        # modal dynamics
+        # modal or steady state dynamics
         self.mod_dyn = False
+        self.steady_st = True
         self.direct_damping_ratio = 0.0
 
         # software specific
@@ -89,10 +90,12 @@ class NumericalSystem:
         # steps
 
         if self.mod_dyn: # modal dynamic analysis with geo- statitc steps before
-            _steps.mod_dyn(2, 0.01)
+            _steps.mod_dyn(1, 0.01, self.numEigen, self.minEigen, self.maxEigen)
             _steps.set_direct_damping(1, 5, self.direct_damping_ratio)
         else:
             _steps.freq_analysis(self.numEigen, self.minEigen, self.maxEigen)
+            if self.steady_st:
+                _steps.steady_state_dyn()
 
 
         # assembly
@@ -118,7 +121,8 @@ class NumericalSystem:
             _loads.soil_initial_conditions(depth=self.soil_depth, rho_soil=soil.rho)
             _loads.ini_disp(super_str.h / 300.0)
             _loads.gravity() # applied separatelly for soil and structure in the related steps
-
+        if self.steady_st:
+            _loads.top_load()
 
         # job
 

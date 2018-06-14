@@ -66,7 +66,7 @@ def get_data(filenames):
                 mx = [max( map(abs, u[1]) ) for u in soil_u] # max displacement in each direction
                 dof = mx.index(max( mx )) # direction of max displacement
                 #soilU_ratio = "%.3f" % (soil_u[dof][1][-1] / soil_u[dof][1][0])
-                soilU_ratio = "%.3f" % (soil_u[2][1][-1] / soil_u[2][1][0])
+                soilU_ratio = "%.1f" % abs(soil_u[2][1][-1] / soil_u[2][1][0])
             else:
                 dof = -1
                 soilU_ratio = 'NaN'
@@ -87,7 +87,7 @@ def get_data(filenames):
                 ('fix_sides' ,   n_sys['fixed_sides']),
                 ('soilU_oi'  ,   soilU_ratio),
                 ('PLR'       ,   "%.2f" % (float(sdof['f_col']) / float(f_n)) ),
-                ('time [min]',   n_sys['duration']),
+                ('time [min]',   "%.0f" % n_sys['duration']),
             ])
         else:
             dic.update([
@@ -172,7 +172,7 @@ def plot_xy(x, y, label, xlab, ylab, show_, title='', annote=True):
             plt.annotate( xy[1], xy=xy, textcoords='data')
     if show_:
         plt.title(title)
-        legend(framealpha=1, frameon=True, ncol=1, fancybox=True, loc=(0.5,0.5)); # name of the curve
+        legend(framealpha=1, frameon=True, ncol=1, fancybox=True, loc="best"); # name of the curve
         xlabel(xlab)
         ylabel(ylab)
         show()
@@ -228,6 +228,8 @@ show_table(data, file=True)
 
 ''' ---------------------- ANALYSES ---------------------- '''
 
+''' ---- Soil width ---- '''
+
 def soil_width_analysis():
     xy1 = param_analysis(data, 'soil_width', 'Abq f_n',
                    ['contact', 'soil_mesh', 'pile_act_l'],
@@ -241,6 +243,19 @@ def soil_width_analysis():
 #soil_width_analysis()
 
 
+def soil_width_analysis1():
+    xy1 = param_analysis(data, 'soil_width', 'Abq f_n',
+                        discarded=['PLR'],
+                        needed=[('s_id', 'Sd_Ph35_Pd6_Pt0.0025_Ch80_SE175')])
+    xy2 = param_analysis(data, 'soil_width', 'Abq f_n',
+                         discarded=['PLR', 'soilU_oi'],
+                         needed=[('s_id', 'Sd_Ph35_Pd6_Pt0.05_Ch80_SE50')])
+    plot_xy(xy1[0], xy1[1], 't = 0.0025 m, G = 70', xlab='Soil Diameter [m]', ylab='Abaqus First Frequency [Hz]', show_=False)
+    plot_xy(xy2[0], xy2[1], 't = 0.05 m,   G = 100', xlab='Soil Diameter [m]', ylab='Abaqus First Frequency [Hz]', show_=True)
+
+soil_width_analysis1()
+
+
 def ratio_io_analysis():
     xy3 = param_analysis(data, 'pile_depth', 'soilU_oi',
                    ['contact', 'soil_depth', 'pile_act_l', 'Abq f_n'],
@@ -249,72 +264,99 @@ def ratio_io_analysis():
 
 #ratio_io_analysis()
 
-
-def Ph_analysis():
-    xy1 = param_analysis(data, 'pile_depth', 'Abq f_n',
-                       ['SSI_ind', 'Gaz. f_n'],
-                       [('s_id', 'Ph_d4_h80_Gs35')])
-    xy2 = param_analysis(data, 'pile_depth', 'Abq f_n',
-                         ['SSI_ind', 'Gaz. f_n'],
-                         [('s_id', 'Ph_d4_h80_Gs10')])
-    plot_xy(xy1[0], xy1[1], 'Abaqus G_soil=35Mpa', xlab='Pile Length', ylab='Frequency [Hz]', show_=False)
-    plot_xy(xy2[0], xy2[1], 'Abaqus G_soil=10Mpa', xlab='Pile Length', ylab='Frequency [Hz]', show_=True)
-
-#Ph_analysis()
-
+''' ---- Pile's depth ---- '''
 
 def freq_Ph():
     xy1 = param_analysis(data, 'pile_depth', 'Abq f_n',
                        ['PLR', 'Gaz. f_n'],
-                       [('s_id', 'Ph_Pd6_H80_SE10_Sd300')])
+                       [('s_id', 'Ph_Pd6_H80_SE250_Sd400_')])
     xy2 = param_analysis(data, 'pile_depth', 'Abq f_n',
                          ['PLR', 'Gaz. f_n'],
-                         [('s_id', 'Ph_Pd6_H80_SE35_Sd300')])
+                         [('s_id', 'Ph_Pd6_H80_SE175_Sd400_')])
     xy3 = param_analysis(data, 'pile_depth', 'Abq f_n',
                          ['PLR', 'Gaz. f_n'],
-                         [('s_id', 'Ph_Pd6_H80_SE87.5_Sd300')])
-    plot_xy(xy1[0], xy1[1], 'G_soil=4Mpa', xlab='Pile Length [m]', ylab='Abq f_n', show_=False)
-    plot_xy(xy2[0], xy2[1], 'G_soil=14Mpa', xlab='Pile Length [m]', ylab='Abq f_n', show_=False)
-    plot_xy(xy3[0], xy3[1], 'G_soil=35Mpa', xlab='Pile Length [m]', ylab='Abq f_n', show_=True)
+                         [('s_id', 'Ph_Pd6_H80_SE50_Sd400_')])
+    plot_xy(xy1[0], xy1[1], 'G_soil=100Mpa', xlab='Pile Length [m]', ylab='Abaqus Frequency [Hz]', show_=False)
+    plot_xy(xy2[0], xy2[1], 'G_soil=70pa', xlab='Pile Length [m]', ylab='Abaqus Frequency [Hz]', show_=False)
+    plot_xy(xy3[0], xy3[1], 'G_soil=20Mpa', xlab='Pile Length [m]', ylab='Abaqus Frequency [Hz]', show_=True)
 
 #freq_Ph()
 
 
 def PLR_Ph():
     xy1 = param_analysis(data, 'pile_depth', 'PLR',
-                       ['Abq f_n', 'Gaz. f_n'],
-                       [('s_id', 'Ph_Pd6_H80_SE10_Sd300')])
+                         discarded=['Abq f_n', 'Gaz. f_n'],
+                         needed=[('s_id', 'Ph_Pd6_H80_SE250_Sd400_')])
     xy2 = param_analysis(data, 'pile_depth', 'PLR',
-                         ['Abq f_n', 'Gaz. f_n'],
-                         [('s_id', 'Ph_Pd6_H80_SE35_Sd300')])
+                         discarded=['Abq f_n', 'Gaz. f_n'],
+                         needed=[('s_id', 'Ph_Pd6_H80_SE175_Sd400_')])
     xy3 = param_analysis(data, 'pile_depth', 'PLR',
-                         ['Abq f_n', 'Gaz. f_n'],
-                         [('s_id', 'Ph_Pd6_H80_SE87.5_Sd300')])
-    plot_xy(xy1[0], xy1[1], 'G_soil=4Mpa', xlab='Pile Length [m]', ylab='PLR', show_=False)
-    plot_xy(xy2[0], xy2[1], 'G_soil=14Mpa', xlab='Pile Length [m]', ylab='PLR', show_=False)
-    plot_xy(xy3[0], xy3[1], 'G_soil=35Mpa', xlab='Pile Length [m]', ylab='PLR', show_=True)
+                         discarded=['Abq f_n', 'Gaz. f_n'],
+                         needed=[('s_id', 'Ph_Pd6_H80_SE50_Sd400_')])
+    plot_xy(xy1[0], xy1[1], 'G_soil=100Mpa', xlab='Pile Length [m]', ylab='PLR', show_=False)
+    plot_xy(xy2[0], xy2[1], 'G_soil=70pa', xlab='Pile Length [m]', ylab='PLR', show_=False)
+    plot_xy(xy3[0], xy3[1], 'G_soil=20Mpa', xlab='Pile Length [m]', ylab='PLR', show_=True)
 
 #PLR_Ph()
 
 
+
+''' ---- Tube diameter ---- '''
+
+def freq_Pd():
+    xy1 = param_analysis(data, 'd_e', 'Abq f_n',
+                        discarded=['PLR', 'Gaz. f_n', 'pile_act_l'],
+                        needed=[('s_id', 'Pd_Ph35_Ch80_SE175_Sd400')])
+    xy2 = param_analysis(data, 'd_e', 'Gaz. f_n',
+                         discarded=['PLR', 'Abq f_n', 'pile_act_l'],
+                         needed=[('s_id', 'Pd_Ph35_Ch80_SE175_Sd400')])
+    plot_xy(xy1[0], xy1[1], 'Abaqus', xlab='Pile Diameter [m]', ylab='Frequency [Hz]', show_=False)
+    plot_xy(xy2[0], xy2[1], 'Gazetas', xlab='Pile Diameter [m]', ylab='Frequency [Hz]', show_=True)
+
+#freq_Pd()
+
 def PLR_Pd():
-    xy1 = param_analysis(data, 'pile_depth', 'PLR',
-                       ['Abq f_n', 'Gaz. f_n'],
-                       [('s_id', '')])
-    plot_xy(xy1[0], xy1[1], 'G_soil=35Mpa', xlab='Pile Diameter [m]', ylab='PLR', show_=True)
+    xy1 = param_analysis(data, 'd_e', 'PLR',
+                        discarded=['Abq f_n', 'Gaz. f_n', 'pile_act_l'],
+                        needed=[('s_id', 'Pd_Ph35_Ch80_SE175_Sd400')])
+    plot_xy(xy1[0], xy1[1], 'G_soil=70Mpa', xlab='Pile Diameter [m]', ylab='PLR', show_=True)
 
 #PLR_Pd()
 
+''' ---- Structure's height ---- '''
+
+def freq_Pd():
+    xy1 = param_analysis(data, 's_str_h', 'Abq f_n',
+                        discarded=['PLR', 'Gaz. f_n',],
+                        needed=[('s_id', 'Ch_Ph35_Pd6_SE175_Sd400')])
+    xy2 = param_analysis(data, 's_str_h', 'Gaz. f_n',
+                         discarded=['PLR', 'Abq f_n', 'pile_act_l'],
+                         needed=[('s_id', 'Ch_Ph35_Pd6_SE175_Sd400')])
+    plot_xy(xy1[0], xy1[1], 'Abaqus', xlab='Structure Height [m]', ylab='Frequency [Hz]', show_=False)
+    plot_xy(xy2[0], xy2[1], 'Gazetas', xlab='Structure Height [m]', ylab='Frequency [Hz]', show_=True)
+
+#freq_Pd()
+
+def PLR_Pd():
+    xy1 = param_analysis(data, 's_str_h', 'PLR',
+                        discarded=['Abq f_n', 'Gaz. f_n'],
+                        needed=[('s_id', 'Ch_Ph35_Pd6_SE175_Sd400')])
+    plot_xy(xy1[0], xy1[1], 'G_soil=70Mpa', xlab='Structure Height [m]', ylab='PLR', show_=True)
+
+#PLR_Pd()
+
+''' ---- Soil displacement ---- '''
 
 for i in range(1,4,1):
     #plot_soil_u(filenames[-i])
     pass
 
-#plot_soil_u('2018_5_29--7_57_937000')
+#plot_soil_u('2018_6_13--21_1_762000')
 
 for filename in filenames:
     #show_graphics(filename)
     pass
+
 
 
 def remove_analysis(data, criterias):
@@ -327,10 +369,10 @@ def remove_analysis(data, criterias):
                 u2_path = abaqus_dir + d['name'] + '_u2.png'
                 print mod_path
                 os.remove(mod_path)
-                os.remove(abq_path)
-                os.remove(u1_path)
-                os.remove(u2_path)
+                #os.remove(abq_path)
+                #os.remove(u1_path)
+                #os.remove(u2_path)
                 break
 
 #remove_analysis(data, [('name', '2018_6_10--22_5_978000')])
-#remove_analysis(data, [('s_id', 'Ph_Pd6_H80_SE87.5_Sd300_')])
+#remove_analysis(data, [('s_id', 'Sd_Ph35_Pd6_Pt0_Ch80_SE50')])

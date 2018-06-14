@@ -64,6 +64,15 @@ def ini_disp(disp):
         ur1=UNSET, ur2=UNSET, ur3=UNSET, amplitude=UNSET, fixed=OFF,
         distributionType=UNIFORM, fieldName='', localCsys=None)
 
+def top_load():
+    a = mdb.models['3D_MODEL'].rootAssembly
+    s1 = a.instances['column-1'].faces
+    side1Faces1 = s1.getSequenceFromMask(mask=('[#20 ]', ), )
+    region = a.Surface(side1Faces=side1Faces1, name='top_surf')
+    mdb.models['3D_MODEL'].SurfaceTraction(name='top_load', createStepName='ssd',
+        region=region, magnitude=1000+0j, directionVector=((-1.0, 0.0, 0.0), (
+        -2.0, 0.0, 0.0)), distributionType=UNIFORM, field='', localCsys=None,
+        traction=GENERAL)
 
 def gravity():
     # geostatic -> on soil

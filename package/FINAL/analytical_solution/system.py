@@ -30,6 +30,8 @@ class AnalyticalSystem:
 		#y_ = [ o.sdof.u(x, u0, v0) for x in x_ ]
 
 
+	def print_objects(o):
+
 		print '\n SDOF'
 		pprint(vars(o.sdof))
 		print '\n C Mode'

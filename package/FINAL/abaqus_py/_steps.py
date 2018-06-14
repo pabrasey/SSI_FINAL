@@ -27,7 +27,13 @@ def freq_analysis(numEigen, minEigen, maxEigen):
         maxEigen=maxEigen, minEigen=minEigen, numEigen=numEigen)
 
 
-def mod_dyn(timePeriod, incSize):
+def steady_state_dyn():
+    # steady state dynamics, modal -> has to be after the frequency step
+    mdb.models['3D_MODEL'].SteadyStateModalStep(name='ssd', previous='frequency',
+                                                frequencyRange=((0.0, 10.0, 20, 3.0),))
+
+
+def mod_dyn(timePeriod, incSize, numEigen, minEigen, maxEigen):
     # geostatic
     mdb.models['3D_MODEL'].GeostaticStep(name='geostatic', previous='Initial', timeIncrementationMethod=FIXED )
 
